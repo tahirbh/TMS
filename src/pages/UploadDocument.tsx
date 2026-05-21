@@ -161,7 +161,7 @@ Extract every visible field and return as structured JSON array.`;
     try {
       const getFieldValue = (labelPart: string) => {
         const f = (fields as any[]).find((field: any) => field.label.toLowerCase().includes(labelPart.toLowerCase()));
-        return f ? f.value : '';
+        return (f ? f.value : '').trim();
       };
 
       // ── 1. Save to Base44 AI DMS ─────────────────────────────────────────
@@ -174,95 +174,127 @@ Extract every visible field and return as structured JSON array.`;
         photo_url: photoUrl || '',
       });
 
-      // ── 2. Resolve entity (employee / vehicle) and update master ─────────
+      // ── 2. Resolve entity + compute expiry ───────────────────────────────
+      const docTypeLabel = docType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+      const rawExpiry =
+        getFieldValue('expiry date (gregorian)') ||
+        getFieldValue('expiry date') ||
+        getFieldValue('expiry') ||
+        getFieldValue('valid until');
+      const expiryDate: string | null = parseDateToGregorian(rawExpiry) || null;
+
       let entityId: string | null = null;
       let entityType = 'general';
-      let docName = '';
-      let expiryDate: string | null = null;
-      let docTypeLabel = docType.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      let docName = docTypeLabel;
 
-      const rawExpiry = getFieldValue('expiry date (gregorian)') || getFieldValue('expiry date') || getFieldValue('expiry') || getFieldValue('valid until');
-      expiryDate = parseDateToGregorian(rawExpiry) || null;
-
-      // ── Employee-linked documents ──────────────────────────────────────────
-      if (docType === 'muqeem' || docType === 'driving_license' || docType === 'energy_permit') {
-        const iqama = getFieldValue('iqama number') || getFieldValue('iqama') || getFieldValue('employee id');
-        const personName = getFieldValue('name (english)') || getFieldValue('full name') || getFieldValue('employee name');
-        docName = personName || iqama || 'Employee Document';
+      // ── Employee docs ──────────────────────────────────────────────────
+      if (['muqeem', 'driving_license', 'energy_permit'].includes(docType)) {
         entityType = 'employee';
+        const iqama =
+          getFieldValue('iqama number') ||
+          getFieldValue('iqama') ||
+          getFieldValue('employee id') ||
+          getFieldValue('badge number');
+        const personName =
+          getFieldValue('name (english)') ||
+          getFieldValue('full name') ||
+          getFieldValue('employee name') ||
+          getFieldValue('name');
+        docName = personName || iqama || docTypeLabel;
 
         if (iqama) {
-          // Find employee by iqama
-          const { data: empRows } = await supabase
+          // employees.id IS the same as the profile_id — direct lookup by iqama
+          const { data: empRows, error: empLookupErr } = await (supabase as any)
             .from('employees')
-            .select('id, profile_id')
+            .select('id')
             .eq('iqama_number', iqama)
             .limit(1);
-
+          if (empLookupErr) console.warn('Employee lookup:', empLookupErr.message);
           if (empRows && empRows.length > 0) {
-            const emp = empRows[0] as any;
-            entityId = emp.profile_id || emp.id;
-
-            // Update expiry fields on employee record
-            const updateData: Record<string, string> = { updated_at: new Date().toISOString() } as any;
-            if (docType === 'muqeem' && expiryDate) updateData.iqama_expiry = expiryDate;
-            if (docType === 'driving_license' && expiryDate) updateData.driving_license_expiry = expiryDate;
-            if (docType === 'energy_permit' && expiryDate) updateData.sec_permit_expiry = expiryDate;
-            await (supabase.from('employees') as any).update(updateData).eq('id', emp.id);
+            entityId = empRows[0].id;
+            const upd: Record<string, string> = {};
+            if (docType === 'muqeem'         && expiryDate) upd.iqama_expiry            = expiryDate;
+            if (docType === 'driving_license' && expiryDate) upd.driving_license_expiry  = expiryDate;
+            if (docType === 'energy_permit'   && expiryDate) upd.sec_permit_expiry       = expiryDate;
+            if (Object.keys(upd).length > 0) {
+              const { error: upErr } = await (supabase as any).from('employees').update(upd).eq('id', entityId);
+              if (upErr) console.warn('Employee update:', upErr.message);
+            }
           }
+        }
+        // Fallback: search profiles by name if iqama lookup failed
+        if (!entityId && docName && docName !== docTypeLabel) {
+          const { data: pRows } = await (supabase as any)
+            .from('profiles')
+            .select('id')
+            .ilike('full_name', `%${docName}%`)
+            .limit(1);
+          if (pRows && pRows.length > 0) entityId = pRows[0].id;
         }
       }
 
-      // ── Vehicle-linked documents ───────────────────────────────────────────
-      if (docType === 'vehicle_registration' || docType === 'mvpi_certificate') {
-        const plateNumber = getFieldValue('plate') || getFieldValue('registration number') || getFieldValue('registration_number');
-        const seqNumber   = getFieldValue('sequence') || getFieldValue('serial');
-        const ownerName   = getFieldValue('owner');
-        docName = plateNumber || seqNumber || 'Vehicle Document';
+      // ── Vehicle docs ────────────────────────────────────────────────────
+      if (['vehicle_registration', 'mvpi_certificate'].includes(docType)) {
         entityType = 'vehicle';
+        const plate = getFieldValue('plate number') || getFieldValue('plate') || getFieldValue('registration number');
+        const seq   = getFieldValue('sequence number') || getFieldValue('sequence') || getFieldValue('serial');
+        const owner = getFieldValue('owner name') || getFieldValue('owner');
+        docName = plate || seq || docTypeLabel;
 
-        let vQuery = supabase.from('vehicles').select('id');
-        if (seqNumber) vQuery = vQuery.eq('sequence_number', seqNumber);
-        else if (plateNumber) vQuery = vQuery.eq('registration_number', plateNumber);
+        let vQ = (supabase as any).from('vehicles').select('id');
+        if (seq) vQ = vQ.eq('sequence_number', seq);
+        else if (plate) vQ = vQ.ilike('registration_number', `%${plate}%`);
+        const { data: vRows } = await vQ.limit(1);
 
-        const { data: vRows } = await vQuery.limit(1);
         if (vRows && vRows.length > 0) {
-          entityId = (vRows[0] as any).id;
-          const vUpdate: Record<string, string> = {};
-          if (docType === 'vehicle_registration' && expiryDate) vUpdate.registration_expiry = expiryDate;
-          if (docType === 'mvpi_certificate'      && expiryDate) vUpdate.mvpi_expiry = expiryDate;
-          if (ownerName) vUpdate.owner_name = ownerName;
-          if (Object.keys(vUpdate).length > 0) {
-            await supabase.from('vehicles').update(vUpdate).eq('id', entityId);
-          }
+          entityId = vRows[0].id;
+          const vUpd: Record<string, string> = {};
+          if (docType === 'vehicle_registration' && expiryDate) vUpd.registration_expiry = expiryDate;
+          if (docType === 'mvpi_certificate'      && expiryDate) vUpd.mvpi_expiry         = expiryDate;
+          if (owner) vUpd.owner_name = owner;
+          if (Object.keys(vUpd).length > 0)
+            await (supabase as any).from('vehicles').update(vUpd).eq('id', entityId);
         }
       }
 
-      // ── 3. Insert into DMS Engine documents table ──────────────────────────
-      const dmsDoc: Record<string, unknown> = {
-        name:         docName || docTypeLabel,
+      // ── 3. Insert into DMS Engine `documents` table ──────────────────────
+      // entity_id must never be SQL NULL — use nil-UUID as fallback
+      const safeEntityId = entityId || '00000000-0000-0000-0000-000000000000';
+
+      const dmsPayload: Record<string, unknown> = {
+        name:         docName,
         type:         docTypeLabel,
         file_url:     fileUrl,
         storage_path: fileUrl,
         entity_type:  entityType,
-        entity_id:    entityId,
+        entity_id:    safeEntityId,
         status:       'valid',
-        created_at:   new Date().toISOString(),
       };
-      if (expiryDate) dmsDoc.expiry_date = expiryDate;
-      await (supabase.from('documents') as any).insert([dmsDoc]);
+      if (expiryDate) dmsPayload.expiry_date = expiryDate;
+
+      const { error: dmsErr } = await (supabase as any)
+        .from('documents')
+        .insert([dmsPayload]);
+
+      if (dmsErr) {
+        throw new Error(
+          `DMS Engine insert failed: ${dmsErr.message}` +
+          (dmsErr.hint ? ` — hint: ${dmsErr.hint}` : '') +
+          (dmsErr.code ? ` (code: ${dmsErr.code})` : '')
+        );
+      }
 
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast({
-        title: 'Document saved successfully!',
+        title: '✅ Document saved!',
         description: entityId
-          ? `Linked to ${entityType === 'vehicle' ? 'vehicle' : 'employee'} and added to DMS Engine.`
-          : 'Saved to AI DMS and added to DMS Engine.',
+          ? `Linked to ${entityType} "${docName}" — now visible in DMS Engine.`
+          : `Added to DMS Engine as "${docName}" (no matching record auto-linked).`,
       });
     } catch (err: any) {
-      console.error('Save error:', err);
+      console.error('handleSave error:', err);
       toast({
-        title: 'Save failed',
+        title: '❌ Save failed',
         description: err.message || 'An unexpected error occurred.',
         variant: 'destructive',
       });
