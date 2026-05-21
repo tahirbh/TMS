@@ -35,6 +35,7 @@ import DMSUploadDocument from './pages/UploadDocument';
 import DMSDocuments from './pages/Documents';
 import DMSArchived from './pages/Archived';
 import DMSSampleResults from './pages/SampleResults';
+import GovLookupPage from './pages/GovLookupPage';
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -164,6 +165,7 @@ function AppContent() {
           <Route path="/archived" element={<DMSArchived />} />
           <Route path="/sample-results" element={<DMSSampleResults />} />
           <Route path="/knowledge" element={<KnowledgePage />} />
+          <Route path="/gov-lookup" element={<AuthGuard path="/gov-lookup"><GovLookupPage /></AuthGuard>} />
           <Route path="/settings" element={<AuthGuard path="/settings"><SettingsPage /></AuthGuard>} />
           <Route path="/notifications" element={<AuthGuard path="/notifications"><NotificationsPage /></AuthGuard>} />
           <Route path="" element={<NotFoundPage />} default />

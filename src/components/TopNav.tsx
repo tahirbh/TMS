@@ -73,6 +73,7 @@ export const MENU_STRUCTURE = [
       { icon: FileText, label: 'DMS Engine', path: '/dms' },
       { icon: Search, label: 'Relational Search', path: '/search' },
       { icon: MapIcon, label: 'Sites', path: '/sites' },
+      { icon: Shield, label: 'Gov Data Lookup', path: '/gov-lookup' },
     ]
   },
   {
