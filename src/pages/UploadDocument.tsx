@@ -39,19 +39,115 @@ const FIELD_TEMPLATES: Record<string, string[]> = {
   ],
 };
 
-function parseDateToGregorian(dateStr: string): string | null {
-  if (!dateStr) return null;
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-  const parts = dateStr.split(/[-/]/);
-  if (parts.length === 3) {
-    if (parts[2].length === 4) {
-      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-    } else if (parts[0].length === 4) {
-      return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+/**
+ * Converts a Hijri date string (YYYY-MM-DD) to a Gregorian Date.
+ * Hijri years are in the range 1300-1600, Gregorian years are 1900-2100.
+ */
+function hijriToGregorian(hijriStr: string): Date | null {
+  const parts = hijriStr.split('-');
+  if (parts.length !== 3) return null;
+  const hYear = parseInt(parts[0], 10);
+  const hMonth = parseInt(parts[1], 10);
+  const hDay = parseInt(parts[2], 10);
+  if (isNaN(hYear) || isNaN(hMonth) || isNaN(hDay)) return null;
+
+  // Julian Day Number formula for Hijri → Gregorian
+  const jd = Math.floor((11 * hYear + 3) / 30) + 354 * hYear + 30 * hMonth
+             - Math.floor((hMonth - 1) / 2) + hDay + 1948440 - 385;
+  let l = jd + 68569;
+  const n = Math.floor((4 * l) / 146097);
+  l = l - Math.floor((146097 * n + 3) / 4);
+  const i = Math.floor((4000 * (l + 1)) / 1461001);
+  l = l - Math.floor((1461 * i) / 4) + 31;
+  const j = Math.floor((80 * l) / 2447);
+  const day = l - Math.floor((2447 * j) / 80);
+  const ll = Math.floor(j / 11);
+  const month = j + 2 - 12 * ll;
+  const year = 100 * (n - 49) + i + ll;
+  return new Date(year, month - 1, day);
+}
+
+/**
+ * Robustly converts any date string to a Gregorian YYYY-MM-DD string.
+ * Handles:
+ *   • Already-Gregorian ISO strings (2026-08-15)
+ *   • Hijri dates (1448-02-18 → 2026-08-11)
+ *   • DD/MM/YYYY, MM/DD/YYYY, D-M-YYYY etc.
+ *   • Partial text like "15 Aug 2026"
+ */
+function toGregorianISO(raw: string): string | null {
+  if (!raw) return null;
+  const s = raw.trim().replace(/[\u200B-\u200D\uFEFF]/g, ''); // strip zero-width chars
+  if (!s || s === '—' || s === 'N/A' || s.toLowerCase() === 'n/a') return null;
+
+  // Try native Date parse first (handles ISO, RFC etc.)
+  // But first detect Hijri: year in 1300-1600 range
+  const isoMatch = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+  if (isoMatch) {
+    const year = parseInt(isoMatch[1], 10);
+    if (year >= 1300 && year <= 1600) {
+      // Hijri date
+      const g = hijriToGregorian(s);
+      if (g && !isNaN(g.getTime())) {
+        return `${g.getFullYear()}-${String(g.getMonth() + 1).padStart(2, '0')}-${String(g.getDate()).padStart(2, '0')}`;
+      }
+    }
+    if (year >= 1900 && year <= 2100) {
+      // Looks like a valid Gregorian ISO date
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }
     }
   }
-  return dateStr;
+
+  // Try DD/MM/YYYY or DD-MM-YYYY
+  const dmy = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+  if (dmy) {
+    const d = new Date(`${dmy[3]}-${dmy[2].padStart(2,'0')}-${dmy[1].padStart(2,'0')}`);
+    if (!isNaN(d.getTime())) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+  }
+
+  // Try YYYY/MM/DD
+  const ymd = s.match(/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})$/);
+  if (ymd) {
+    const year = parseInt(ymd[1], 10);
+    if (year >= 1300 && year <= 1600) {
+      const g = hijriToGregorian(`${ymd[1]}-${ymd[2].padStart(2,'0')}-${ymd[3].padStart(2,'0')}`);
+      if (g && !isNaN(g.getTime())) {
+        return `${g.getFullYear()}-${String(g.getMonth() + 1).padStart(2,'0')}-${String(g.getDate()).padStart(2,'0')}`;
+      }
+    }
+    const d = new Date(`${ymd[1]}-${ymd[2].padStart(2,'0')}-${ymd[3].padStart(2,'0')}`);
+    if (!isNaN(d.getTime())) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+  }
+
+  // Last resort: let the browser parse natural language dates
+  const parsed = new Date(s);
+  if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 1900) {
+    return `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2,'0')}-${String(parsed.getDate()).padStart(2,'0')}`;
+  }
+
+  return null;
 }
+
+/** Calculate document status and remaining days from a Gregorian ISO expiry string */
+function getDocValidity(expiryISO: string | null): { status: 'valid' | 'near_expiry' | 'expired'; daysLeft: number | null } {
+  if (!expiryISO) return { status: 'valid', daysLeft: null };
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  const exp = new Date(expiryISO);
+  exp.setHours(0, 0, 0, 0);
+  const daysLeft = Math.ceil((exp.getTime() - now.getTime()) / 86400000);
+  if (daysLeft < 0)   return { status: 'expired',    daysLeft };
+  if (daysLeft <= 30) return { status: 'near_expiry', daysLeft };
+  return { status: 'valid', daysLeft };
+}
+
 
 export default function UploadDocument() {
   const [step, setStep] = useState(0); // 0: type, 1: upload, 2: processing, 3: review
@@ -174,14 +270,47 @@ Extract every visible field and return as structured JSON array.`;
         photo_url: photoUrl || '',
       });
 
-      // ── 2. Resolve entity + compute expiry ───────────────────────────────
+      // ── 2. Resolve expiry date per document type ─────────────────────────
+      // Strategy: for each doc type, know which extracted field holds the expiry.
+      // Muqeem always provides BOTH Hijri and Gregorian fields — prefer Gregorian.
+      // DL/Energy Permit: single "Expiry Date" field which may be Hijri or Gregorian.
+      // Vehicle docs: "Registration Expiry Date" / "Insurance Expiry Date" / "Expiry Date".
       const docTypeLabel = docType.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
-      const rawExpiry =
-        getFieldValue('expiry date (gregorian)') ||
-        getFieldValue('expiry date') ||
-        getFieldValue('expiry') ||
-        getFieldValue('valid until');
-      const expiryDate: string | null = parseDateToGregorian(rawExpiry) || null;
+
+      let rawExpiryGregorian = '';
+      let rawExpiryHijri     = '';
+
+      if (docType === 'muqeem') {
+        rawExpiryGregorian = getFieldValue('expiry date (gregorian)') || getFieldValue('gregorian expiry');
+        rawExpiryHijri     = getFieldValue('expiry date (hijri)')     || getFieldValue('hijri expiry') || getFieldValue('expiry date');
+      } else if (docType === 'driving_license') {
+        // DL Expiry Date is often Hijri on Saudi licenses
+        rawExpiryGregorian = getFieldValue('expiry date (gregorian)') || getFieldValue('gregorian');
+        rawExpiryHijri     = getFieldValue('expiry date (hijri)')     || getFieldValue('expiry date') || getFieldValue('expiry');
+      } else if (docType === 'energy_permit') {
+        rawExpiryGregorian = getFieldValue('expiry date (gregorian)') || getFieldValue('expiry date') || getFieldValue('expiry');
+        rawExpiryHijri     = getFieldValue('expiry date (hijri)');
+      } else if (docType === 'vehicle_registration') {
+        rawExpiryGregorian = getFieldValue('registration expiry date') || getFieldValue('expiry date') || getFieldValue('expiry');
+      } else if (docType === 'mvpi_certificate') {
+        rawExpiryGregorian = getFieldValue('expiry date') || getFieldValue('expiry') || getFieldValue('valid until');
+      }
+
+      // Convert to Gregorian ISO: prefer explicit Gregorian field, then convert Hijri
+      let expiryDate: string | null =
+        toGregorianISO(rawExpiryGregorian) ||
+        toGregorianISO(rawExpiryHijri) ||
+        null;
+
+      // Safety: if we somehow got a Hijri year stored (1300-1600) in expiryDate, reconvert
+      if (expiryDate) {
+        const yr = parseInt(expiryDate.substring(0, 4), 10);
+        if (yr >= 1300 && yr <= 1600) {
+          expiryDate = toGregorianISO(expiryDate);
+        }
+      }
+
+      const { status: docStatus, daysLeft } = getDocValidity(expiryDate);
 
       let entityId: string | null = null;
       let entityType = 'general';
@@ -268,7 +397,7 @@ Extract every visible field and return as structured JSON array.`;
         storage_path: fileUrl,
         entity_type:  entityType,
         entity_id:    safeEntityId,
-        status:       'valid',
+        status:       docStatus,
       };
       if (expiryDate) dmsPayload.expiry_date = expiryDate;
 
@@ -287,9 +416,17 @@ Extract every visible field and return as structured JSON array.`;
       queryClient.invalidateQueries({ queryKey: ['documents'] });
       toast({
         title: '✅ Document saved!',
-        description: entityId
-          ? `Linked to ${entityType} "${docName}" — now visible in DMS Engine.`
-          : `Added to DMS Engine as "${docName}" (no matching record auto-linked).`,
+        description: (() => {
+          let msg = entityId
+            ? `Linked to ${entityType} "${docName}" — visible in DMS Engine.`
+            : `Added to DMS Engine as "${docName}" (no matching ${entityType} found to auto-link).`;
+          if (expiryDate && daysLeft !== null) {
+            msg += daysLeft < 0
+              ? ` ⚠️ EXPIRED ${Math.abs(daysLeft)} days ago.`
+              : ` 📅 ${daysLeft} days remaining.`;
+          }
+          return msg;
+        })(),
       });
     } catch (err: any) {
       console.error('handleSave error:', err);
@@ -324,14 +461,17 @@ Extract every visible field and return as structured JSON array.`;
         return f ? f.value : '';
       };
 
-      const plateNumber = getFieldValue('plate') || getFieldValue('registration number') || getFieldValue('registration_number');
-      const seqNumber = getFieldValue('sequence') || getFieldValue('serial');
-      const ownerName = getFieldValue('owner');
-      const make = getFieldValue('make') || getFieldValue('manufacturer');
-      const model = getFieldValue('model') || getFieldValue('vehicle type') || getFieldValue('vehicle_type');
+      const plateNumber = getFieldValue('plate') || getFieldValue('plate number') || getFieldValue('registration number') || getFieldValue('registration_number');
+      const seqNumber = getFieldValue('sequence') || getFieldValue('sequence number') || getFieldValue('serial');
+      const ownerName = getFieldValue('owner') || getFieldValue('owner name');
+      const make = getFieldValue('make') || getFieldValue('vehicle make') || getFieldValue('manufacturer');
+      const model = getFieldValue('model') || getFieldValue('vehicle model') || getFieldValue('vehicle type');
       const color = getFieldValue('color');
-      const expiryDateRaw = getFieldValue('expiry') || getFieldValue('expiry date') || getFieldValue('expiry_date');
-      const expiryDate = parseDateToGregorian(expiryDateRaw);
+      // Use correct expiry field per doc type, then convert Hijri if needed
+      const rawExpiry = docType === 'vehicle_registration'
+        ? (getFieldValue('registration expiry date') || getFieldValue('expiry date') || getFieldValue('expiry'))
+        : (getFieldValue('expiry date') || getFieldValue('expiry') || getFieldValue('valid until'));
+      const expiryDate = toGregorianISO(rawExpiry);
 
       if (!plateNumber && !seqNumber) {
         toast({
