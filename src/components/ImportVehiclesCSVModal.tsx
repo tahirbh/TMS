@@ -131,37 +131,52 @@ export default function ImportVehiclesCSVModal({ isOpen, onClose, onImportComple
       const mvpiExpiry = idxMvpiExpiry !== -1 ? (values[idxMvpiExpiry] || '').trim() : '';
       const notes = idxNotes !== -1 ? (values[idxNotes] || '').trim() : '';
 
-      // Validation logic
+      // ── Normalise Status (accept many common variations) ──
+      const normaliseStatus = (raw: string): string => {
+        const s = raw.toLowerCase().trim().replace(/[-\s]+/g, '_');
+        if (['available','avail','active','free','idle','ready'].includes(s)) return 'available';
+        if (['in_use','inuse','in-use','busy','on_trip','on-trip','deployed','running'].includes(s)) return 'in_use';
+        if (['maintenance','under_maintenance','repair','service','workshop'].includes(s)) return 'maintenance';
+        if (['inactive','decommissioned','retired','scrapped','off','disabled'].includes(s)) return 'inactive';
+        return 'available'; // safe default — never block import for status
+      };
+
+      // ── Validation logic ──
       let isValid = true;
-      let errorMsg = '';
+      const errorMessages: string[] = [];
 
       const year = parseInt(yearRaw);
       const capacityTons = parseFloat(capacityRaw);
 
       if (!registrationNumber) {
         isValid = false;
-        errorMsg = 'Registration Number is required.';
-      } else if (!make) {
-        isValid = false;
-        errorMsg = 'Make is required.';
-      } else if (!model) {
-        isValid = false;
-        errorMsg = 'Model is required.';
-      } else if (isNaN(year) || year < 1900 || year > 2100) {
-        isValid = false;
-        errorMsg = 'Year must be a valid 4-digit number (e.g. 2024).';
+        errorMessages.push('❌ Registration Number is missing — add plate number (e.g. 1901 ERA)');
       }
+      if (!make) {
+        isValid = false;
+        errorMessages.push('❌ Make is missing — add vehicle brand (e.g. Mercedes, Volvo)');
+      }
+      if (isNaN(year) || year < 1900 || year > 2100) {
+        isValid = false;
+        errorMessages.push(`❌ Year "${yearRaw}" is invalid — use 4-digit year between 1900–2100`);
+      }
+      if (capacityTons <= 0 || isNaN(capacityTons)) {
+        errorMessages.push('⚠️ Capacity Tons is 0 or missing — will default to 0');
+      }
+
+      const errorMsg = errorMessages.join(' | ');
+
+      // Model optional: fall back to make if empty
+      const resolvedModel = model || make;
 
       const validTypes = ['truck', 'trailer', 'van', 'tanker', 'flatbed'];
       const finalType = validTypes.includes(type) ? type : 'truck';
-
-      const validStatuses = ['available', 'in_use', 'maintenance', 'inactive'];
-      const finalStatus = validStatuses.includes(status) ? status : 'available';
+      const finalStatus = normaliseStatus(status);
 
       resultRows.push({
         registrationNumber,
         make,
-        model,
+        model: resolvedModel,
         year: isNaN(year) ? new Date().getFullYear() : year,
         type: finalType,
         capacityTons: isNaN(capacityTons) ? 0 : capacityTons,
@@ -456,15 +471,47 @@ export default function ImportVehiclesCSVModal({ isOpen, onClose, onImportComple
               </div>
             )}
 
-            {/* Validation warning summary */}
+            {/* ── Smart Fix Guide banner ── */}
             {parsedRows.some(r => !r.isValid) && (
-              <div className="p-4 bg-amber-950/60 border border-amber-900/60 rounded-2xl flex items-start gap-3 text-amber-300 text-xs animate-in fade-in">
-                <AlertTriangle size={16} className="shrink-0 mt-0.5 text-amber-500" />
-                <div>
-                  <p className="font-black text-amber-200">Validation Notice</p>
-                  <p className="text-[10px] text-amber-400 mt-1">
-                    Some rows contain formatting errors or missing values (shown in red below). These rows will be skipped automatically during the import process.
-                  </p>
+              <div className="rounded-2xl border border-amber-800/60 bg-amber-950/40 overflow-hidden">
+                <div className="px-5 py-3 flex items-center gap-3 border-b border-amber-800/40">
+                  <AlertTriangle size={15} className="text-amber-400 shrink-0" />
+                  <div className="flex-1">
+                    <p className="font-black text-amber-200 text-xs">
+                      {parsedRows.filter(r => !r.isValid).length} rows need fixing before import
+                    </p>
+                    <p className="text-[10px] text-amber-500 mt-0.5">Valid rows will import — fix errors in your CSV and re-upload to include skipped rows</p>
+                  </div>
+                  <span className="shrink-0 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 font-black text-[10px]">
+                    {parsedRows.filter(r => r.isValid).length}/{parsedRows.length} OK
+                  </span>
+                </div>
+                {/* Common fixes guide */}
+                <div className="px-5 py-3 grid grid-cols-1 sm:grid-cols-3 gap-2 text-[10px]">
+                  <div className="flex gap-2 items-start">
+                    <span className="text-rose-400 font-black shrink-0">REG:</span>
+                    <span className="text-slate-400">Plate number required, e.g. <span className="text-emerald-400 font-mono">1901 ERA</span></span>
+                  </div>
+                  <div className="flex gap-2 items-start">
+                    <span className="text-rose-400 font-black shrink-0">MAKE:</span>
+                    <span className="text-slate-400">Brand name required, e.g. <span className="text-emerald-400 font-mono">Mercedes</span></span>
+                  </div>
+                  <div className="flex gap-2 items-start">
+                    <span className="text-rose-400 font-black shrink-0">YEAR:</span>
+                    <span className="text-slate-400">4-digit year required, e.g. <span className="text-emerald-400 font-mono">2024</span></span>
+                  </div>
+                  <div className="flex gap-2 items-start">
+                    <span className="text-amber-400 font-black shrink-0">STATUS:</span>
+                    <span className="text-slate-400">Use: <span className="text-emerald-400 font-mono">available · in_use · maintenance · inactive</span></span>
+                  </div>
+                  <div className="flex gap-2 items-start">
+                    <span className="text-amber-400 font-black shrink-0">TYPE:</span>
+                    <span className="text-slate-400">Use: <span className="text-emerald-400 font-mono">truck · trailer · van · tanker · flatbed</span></span>
+                  </div>
+                  <div className="flex gap-2 items-start">
+                    <span className="text-blue-400 font-black shrink-0">MODEL:</span>
+                    <span className="text-slate-400">Optional — defaults to Make if blank</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -475,33 +522,53 @@ export default function ImportVehiclesCSVModal({ isOpen, onClose, onImportComple
                 <table className="w-full text-left text-[11px] font-bold text-slate-300">
                   <thead className="bg-slate-900 text-slate-400 border-b border-slate-800 uppercase tracking-wider text-[10px]">
                     <tr>
-                      <th className="px-5 py-3.5">Status</th>
-                      <th className="px-5 py-3.5">Registration</th>
-                      <th className="px-5 py-3.5">Make / Model</th>
-                      <th className="px-5 py-3.5">Year</th>
-                      <th className="px-5 py-3.5">Type</th>
-                      <th className="px-5 py-3.5">Capacity (T)</th>
-                      <th className="px-5 py-3.5">Owner Name</th>
-                      <th className="px-5 py-3.5">Seq Number</th>
+                      <th className="px-4 py-3 w-[90px]">Result</th>
+                      <th className="px-4 py-3">Registration</th>
+                      <th className="px-4 py-3">Make / Model</th>
+                      <th className="px-4 py-3">Year</th>
+                      <th className="px-4 py-3">Type</th>
+                      <th className="px-4 py-3">Cap(T)</th>
+                      <th className="px-4 py-3">Status → Mapped</th>
+                      <th className="px-4 py-3 min-w-[280px]">Error / Fix Guide</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-850">
                     {parsedRows.map((row, idx) => (
-                      <tr key={idx} className={`hover:bg-slate-900/50 transition-colors ${!row.isValid ? 'bg-rose-950/10' : ''}`}>
-                        <td className="px-5 py-3">
+                      <tr key={idx} className={`transition-colors ${!row.isValid ? 'bg-rose-950/20 hover:bg-rose-950/30' : 'hover:bg-slate-900/40'}`}>
+                        <td className="px-4 py-3">
                           {row.isValid ? (
-                            <span className="px-2 py-0.5 bg-emerald-950/80 border border-emerald-800 text-emerald-400 rounded-lg text-[9px]">Valid</span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-950/80 border border-emerald-800 text-emerald-400 rounded-lg text-[9px] font-black">
+                              ✓ Will Import
+                            </span>
                           ) : (
-                            <span className="px-2 py-0.5 bg-rose-950/80 border border-rose-800 text-rose-400 rounded-lg text-[9px]" title={row.errorMsg}>Error</span>
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-rose-950/80 border border-rose-800 text-rose-400 rounded-lg text-[9px] font-black">
+                              ✕ Skipped
+                            </span>
                           )}
                         </td>
-                        <td className={`px-5 py-3 font-mono ${!row.isValid && !row.registrationNumber ? 'text-rose-400' : 'text-slate-200'}`}>{row.registrationNumber || '—'}</td>
-                        <td className="px-5 py-3 text-slate-200">{row.make} {row.model}</td>
-                        <td className="px-5 py-3">{row.year}</td>
-                        <td className="px-5 py-3 capitalize text-slate-400">{row.type}</td>
-                        <td className="px-5 py-3 text-slate-400">{row.capacityTons}t</td>
-                        <td className="px-5 py-3 text-slate-400 max-w-[200px] truncate">{row.ownerName || '—'}</td>
-                        <td className="px-5 py-3 font-mono text-slate-400">{row.sequenceNumber || '—'}</td>
+                        <td className={`px-4 py-3 font-mono text-[11px] ${!row.registrationNumber ? 'text-rose-400' : 'text-slate-200'}`}>
+                          {row.registrationNumber || <span className="text-rose-500 italic">MISSING</span>}
+                        </td>
+                        <td className="px-4 py-3 text-slate-200 text-[11px]">{row.make} {row.model !== row.make ? row.model : ''}</td>
+                        <td className={`px-4 py-3 text-[11px] ${isNaN(row.year) ? 'text-rose-400' : 'text-slate-300'}`}>{row.year || '—'}</td>
+                        <td className="px-4 py-3 capitalize text-slate-400 text-[11px]">{row.type}</td>
+                        <td className="px-4 py-3 text-slate-400 text-[11px]">{row.capacityTons}t</td>
+                        <td className="px-4 py-3 text-[11px]">
+                          <span className="px-1.5 py-0.5 rounded bg-slate-800 text-emerald-400 font-mono text-[10px]">{row.status}</span>
+                        </td>
+                        <td className="px-4 py-3">
+                          {row.isValid ? (
+                            <span className="text-emerald-500 text-[10px]">Ready to import</span>
+                          ) : (
+                            <div className="space-y-1">
+                              {row.errorMsg.split(' | ').map((msg, mi) => (
+                                <p key={mi} className={`text-[10px] leading-snug font-medium ${
+                                  msg.startsWith('❌') ? 'text-rose-300' : 'text-amber-300'
+                                }`}>{msg}</p>
+                              ))}
+                            </div>
+                          )}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
