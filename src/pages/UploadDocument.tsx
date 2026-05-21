@@ -158,21 +158,118 @@ Extract every visible field and return as structured JSON array.`;
 
   const handleSave = async () => {
     setIsSaving(true);
-    await base44.entities.Document.create({
-      document_type: docType,
-      original_file_url: fileUrl,
-      extracted_fields: fields,
-      status: 'confirmed',
-      notes: notes,
-      photo_url: photoUrl || '',
-    });
-    queryClient.invalidateQueries({ queryKey: ['documents'] });
-    toast({
-      title: 'Document saved successfully!',
-      description: 'The extracted data has been saved to the database.',
-    });
-    setIsSaving(false);
-    navigate('/documents');
+    try {
+      const getFieldValue = (labelPart: string) => {
+        const f = (fields as any[]).find((field: any) => field.label.toLowerCase().includes(labelPart.toLowerCase()));
+        return f ? f.value : '';
+      };
+
+      // ── 1. Save to Base44 AI DMS ─────────────────────────────────────────
+      await base44.entities.Document.create({
+        document_type: docType,
+        original_file_url: fileUrl,
+        extracted_fields: fields,
+        status: 'confirmed',
+        notes: notes,
+        photo_url: photoUrl || '',
+      });
+
+      // ── 2. Resolve entity (employee / vehicle) and update master ─────────
+      let entityId: string | null = null;
+      let entityType = 'general';
+      let docName = '';
+      let expiryDate: string | null = null;
+      let docTypeLabel = docType.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+      const rawExpiry = getFieldValue('expiry date (gregorian)') || getFieldValue('expiry date') || getFieldValue('expiry') || getFieldValue('valid until');
+      expiryDate = parseDateToGregorian(rawExpiry) || null;
+
+      // ── Employee-linked documents ──────────────────────────────────────────
+      if (docType === 'muqeem' || docType === 'driving_license' || docType === 'energy_permit') {
+        const iqama = getFieldValue('iqama number') || getFieldValue('iqama') || getFieldValue('employee id');
+        const personName = getFieldValue('name (english)') || getFieldValue('full name') || getFieldValue('employee name');
+        docName = personName || iqama || 'Employee Document';
+        entityType = 'employee';
+
+        if (iqama) {
+          // Find employee by iqama
+          const { data: empRows } = await supabase
+            .from('employees')
+            .select('id, profile_id')
+            .eq('iqama_number', iqama)
+            .limit(1);
+
+          if (empRows && empRows.length > 0) {
+            const emp = empRows[0] as any;
+            entityId = emp.profile_id || emp.id;
+
+            // Update expiry fields on employee record
+            const updateData: Record<string, string> = { updated_at: new Date().toISOString() } as any;
+            if (docType === 'muqeem' && expiryDate) updateData.iqama_expiry = expiryDate;
+            if (docType === 'driving_license' && expiryDate) updateData.driving_license_expiry = expiryDate;
+            if (docType === 'energy_permit' && expiryDate) updateData.sec_permit_expiry = expiryDate;
+            await (supabase.from('employees') as any).update(updateData).eq('id', emp.id);
+          }
+        }
+      }
+
+      // ── Vehicle-linked documents ───────────────────────────────────────────
+      if (docType === 'vehicle_registration' || docType === 'mvpi_certificate') {
+        const plateNumber = getFieldValue('plate') || getFieldValue('registration number') || getFieldValue('registration_number');
+        const seqNumber   = getFieldValue('sequence') || getFieldValue('serial');
+        const ownerName   = getFieldValue('owner');
+        docName = plateNumber || seqNumber || 'Vehicle Document';
+        entityType = 'vehicle';
+
+        let vQuery = supabase.from('vehicles').select('id');
+        if (seqNumber) vQuery = vQuery.eq('sequence_number', seqNumber);
+        else if (plateNumber) vQuery = vQuery.eq('registration_number', plateNumber);
+
+        const { data: vRows } = await vQuery.limit(1);
+        if (vRows && vRows.length > 0) {
+          entityId = (vRows[0] as any).id;
+          const vUpdate: Record<string, string> = {};
+          if (docType === 'vehicle_registration' && expiryDate) vUpdate.registration_expiry = expiryDate;
+          if (docType === 'mvpi_certificate'      && expiryDate) vUpdate.mvpi_expiry = expiryDate;
+          if (ownerName) vUpdate.owner_name = ownerName;
+          if (Object.keys(vUpdate).length > 0) {
+            await supabase.from('vehicles').update(vUpdate).eq('id', entityId);
+          }
+        }
+      }
+
+      // ── 3. Insert into DMS Engine documents table ──────────────────────────
+      const dmsDoc: Record<string, unknown> = {
+        name:         docName || docTypeLabel,
+        type:         docTypeLabel,
+        file_url:     fileUrl,
+        storage_path: fileUrl,
+        entity_type:  entityType,
+        entity_id:    entityId,
+        status:       'valid',
+        created_at:   new Date().toISOString(),
+      };
+      if (expiryDate) dmsDoc.expiry_date = expiryDate;
+      await (supabase.from('documents') as any).insert([dmsDoc]);
+
+      queryClient.invalidateQueries({ queryKey: ['documents'] });
+      toast({
+        title: 'Document saved successfully!',
+        description: entityId
+          ? `Linked to ${entityType === 'vehicle' ? 'vehicle' : 'employee'} and added to DMS Engine.`
+          : 'Saved to AI DMS and added to DMS Engine.',
+      });
+    } catch (err: any) {
+      console.error('Save error:', err);
+      toast({
+        title: 'Save failed',
+        description: err.message || 'An unexpected error occurred.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
+      navigate('/documents');
+    }
   };
 
   const handleReset = () => {

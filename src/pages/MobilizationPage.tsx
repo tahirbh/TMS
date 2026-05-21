@@ -82,9 +82,10 @@ export default function MobilizationPage() {
 
   async function fetchSupportData() {
     const [laborRes, siteRes, supervisorRes] = await Promise.all([
-      supabase.from('employees').select('*, profile:profiles!inner(full_name, role)').eq('profile.role', 'labor').or('status.eq.available,status.is.null'),
+      // Fetch all active employees — the !inner join on profile.role was filtering out most people
+      supabase.from('employees').select('id, iqama_number, nationality, profession, phone, status, profile:profiles(full_name, email, role)').or('status.eq.available,status.eq.active,status.is.null'),
       supabase.from('sites').select('*').eq('is_active', true),
-      supabase.from('profiles').select('*').in('role', ['supervisor', 'admin']),
+      supabase.from('profiles').select('*').in('role', ['supervisor', 'admin', 'manager']),
     ]);
     if (laborRes.data) setLabors(laborRes.data as unknown as Labor[]);
     if (siteRes.data) setSites(siteRes.data);
@@ -302,9 +303,9 @@ export default function MobilizationPage() {
 
       {/* Deployment Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
-          <div className="bg-white rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="px-8 py-6 bg-slate-900 text-white flex items-center justify-between">
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[2000] flex items-center justify-center p-4">
+          <div className="bg-slate-900 rounded-[2.5rem] w-full max-w-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-700">
+            <div className="px-8 py-6 bg-gradient-to-r from-slate-800 to-slate-900 text-white flex items-center justify-between border-b border-slate-700">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-600 rounded-xl">
                   <UserCheck size={24} />
@@ -319,23 +320,30 @@ export default function MobilizationPage() {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-8 space-y-6 bg-slate-900">
               <div className="grid grid-cols-1 gap-6">
                 <div>
                   <label className="block text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Assign Laborer</label>
                   <select 
                     required
                     disabled={!!editingRecord}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-500/10 disabled:opacity-50"
+                    style={{ backgroundColor: '#1e293b', color: '#f1f5f9', borderColor: '#334155' }}
+                    className="w-full px-4 py-3 border rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 disabled:opacity-50 appearance-none"
                     value={form.labor_id}
                     onChange={e => setForm({...form, labor_id: e.target.value})}
                   >
-                    <option value="">Select personnel...</option>
-                    {editingRecord && <option value={editingRecord.labor_id}>{editingRecord.labor?.profile?.full_name}</option>}
+                    <option value="" style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>Select personnel...</option>
+                    {editingRecord && <option value={editingRecord.labor_id} style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>{editingRecord.labor?.profile?.full_name}</option>}
+                    {labors.length === 0 && <option disabled style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>No available employees found</option>}
                     {labors.map(l => (
-                      <option key={l.id} value={l.id}>{l.profile?.full_name} ({l.profession})</option>
+                      <option key={l.id} value={l.id} style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>
+                        {l.profile?.full_name || l.iqama_number} — {l.profession || 'Employee'}
+                      </option>
                     ))}
                   </select>
+                  {labors.length === 0 && (
+                    <p className="text-xs text-amber-400 mt-1">⚠️ No available employees. Check that employees have status = available or active.</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -343,26 +351,28 @@ export default function MobilizationPage() {
                     <label className="block text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Project Site</label>
                     <select 
                       required
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-500/10"
+                      style={{ backgroundColor: '#1e293b', color: '#f1f5f9', borderColor: '#334155' }}
+                      className="w-full px-4 py-3 border rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 appearance-none"
                       value={form.site_id}
                       onChange={e => setForm({...form, site_id: e.target.value})}
                     >
-                      <option value="">Select site...</option>
+                      <option value="" style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>Select site...</option>
                       {sites.map(s => (
-                        <option key={s.id} value={s.id}>{s.name}</option>
+                        <option key={s.id} value={s.id} style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>{s.name}</option>
                       ))}
                     </select>
                   </div>
                   <div>
                     <label className="block text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Supervisor</label>
                     <select 
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-500/10"
+                      style={{ backgroundColor: '#1e293b', color: '#f1f5f9', borderColor: '#334155' }}
+                      className="w-full px-4 py-3 border rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 appearance-none"
                       value={form.supervisor_id}
                       onChange={e => setForm({...form, supervisor_id: e.target.value})}
                     >
-                      <option value="">Select supervisor...</option>
+                      <option value="" style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>Select supervisor...</option>
                       {supervisors.map(s => (
-                        <option key={s.id} value={s.id}>{s.full_name}</option>
+                        <option key={s.id} value={s.id} style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>{s.full_name}</option>
                       ))}
                     </select>
                   </div>
@@ -374,7 +384,8 @@ export default function MobilizationPage() {
                     <input 
                       type="date"
                       required
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-500/10"
+                      style={{ backgroundColor: '#1e293b', color: '#f1f5f9', borderColor: '#334155', colorScheme: 'dark' }}
+                      className="w-full px-4 py-3 border rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-emerald-500/20"
                       value={form.start_date}
                       onChange={e => setForm({...form, start_date: e.target.value})}
                     />
@@ -382,21 +393,23 @@ export default function MobilizationPage() {
                   <div>
                     <label className="block text-xs font-black uppercase text-slate-400 tracking-widest mb-2">Status</label>
                     <select 
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 outline-none focus:ring-4 focus:ring-blue-500/10"
+                      style={{ backgroundColor: '#1e293b', color: '#f1f5f9', borderColor: '#334155' }}
+                      className="w-full px-4 py-3 border rounded-2xl text-sm font-bold outline-none focus:ring-4 focus:ring-emerald-500/20 appearance-none"
                       value={form.status}
                       onChange={e => setForm({...form, status: e.target.value as any})}
                     >
-                      <option value="active">Active</option>
-                      <option value="completed">Completed / Finished</option>
+                      <option value="active" style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>Active</option>
+                      <option value="completed" style={{ backgroundColor: '#1e293b', color: '#f1f5f9' }}>Completed / Finished</option>
                     </select>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-6">
+              <div className="pt-2">
                 <button 
                   type="submit"
-                  className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-xl shadow-blue-600/20"
+                  className="w-full py-4 rounded-2xl font-black uppercase tracking-widest transition shadow-xl"
+                  style={{ background: 'linear-gradient(135deg, #86efac 0%, #60a5fa 100%)', color: '#0f172a' }}
                 >
                   {editingRecord ? 'Update Deployment' : 'Confirm Deployment'}
                 </button>

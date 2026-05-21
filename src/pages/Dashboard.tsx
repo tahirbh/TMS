@@ -430,10 +430,11 @@ const Dashboard = () => {
                     outerRadius={95} 
                     paddingAngle={8}
                     dataKey="value"
+                    strokeWidth={0}
                     onClick={() => navigate('/vehicles')}
                   >
                     {vehicleStats.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="none" />
                     ))}
                   </Pie>
                   <Tooltip />
@@ -542,9 +543,10 @@ const ValidityDonutCard = ({ title, data, onClick }: { title: string; data: Vali
                 outerRadius={40}
                 paddingAngle={total > 0 ? 4 : 0}
                 dataKey="value"
+                strokeWidth={0}
               >
                 {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                  <Cell key={`cell-${index}`} fill={entry.color} stroke="none" />
                 ))}
               </Pie>
             </PieChart>
@@ -587,13 +589,13 @@ const KPICard = ({ title, value, subtitle, trend, icon: Icon, color, alert, onCl
         {hasDonut ? (
           <div className="relative w-11 h-11 flex items-center justify-center transition-transform group-hover:scale-110">
             <svg width="44" height="44" className="absolute transform -rotate-90">
-              {/* Background circle */}
+              {/* Background track — transparent, no white ring */}
               <circle
                 cx="22"
                 cy="22"
                 r={radius}
                 fill="transparent"
-                stroke="rgba(226, 232, 240, 0.5)"
+                stroke="rgba(134,239,172,0.15)"
                 strokeWidth={strokeWidth}
               />
               {/* Foreground circle */}
