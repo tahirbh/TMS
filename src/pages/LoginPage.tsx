@@ -64,30 +64,46 @@ export default function LoginPage() {
     setScanState('recognized');
     setScanStatus('success');
 
-    // Check we have both email and stored password
-    if (!profile.email || !profile.face_login_password) {
-      setScanMessage(
-        `✅ Face verified as ${profile.display_name}. ` +
-        `No linked credentials found — please re-enroll with email & password, or use password login.`
-      );
+    // ── Case 1: Full credentials stored → fully automatic sign-in ──────────
+    if (profile.email && profile.face_login_password) {
+      setScanMessage(`✅ ${profile.display_name} recognised — signing you in…`);
+      const { error } = await signIn(profile.email, profile.face_login_password);
+      if (error) {
+        // Password changed since enrollment
+        setScanState('unrecognized');
+        setScanStatus('error');
+        setScanMessage(
+          `⚠️ Face recognised but sign-in failed — your password may have changed. ` +
+          `Re-enroll via Admin → Face ID Enroll, or use password login below.`
+        );
+        // Switch to password mode with email pre-filled after a short delay
+        setTimeout(() => {
+          setEmail(profile.email);
+          setMode('password');
+        }, 2500);
+      }
+      // On success AuthContext detects session → auto-redirects
       return;
     }
 
-    setScanMessage(`✅ ${profile.display_name} recognised — signing you in…`);
-
-    // Auto sign-in: face is the biometric unlock, stored password is the key.
-    // Identical concept to Face ID on a phone unlocking using the stored PIN internally.
-    const { error } = await signIn(profile.email, profile.face_login_password);
-    if (error) {
-      // Password may have changed since enrollment — guide user to re-enroll
-      setScanState('unrecognized');
-      setScanStatus('error');
-      setScanMessage(
-        `⚠️ Face recognised as ${profile.display_name} but sign-in failed. ` +
-        `Your password may have changed — please re-enroll via Admin → Face ID Enroll, or use password login.`
-      );
+    // ── Case 2: Email known but no stored password (legacy enrollment) ──────
+    // Smoothly switch to password mode with email pre-filled.
+    // User only needs to type their password — face already confirmed identity.
+    if (profile.email) {
+      setScanMessage(`✅ Face confirmed as ${profile.display_name} — enter your password to complete sign-in`);
+      setTimeout(() => {
+        setEmail(profile.email);
+        setMode('password');
+        setError(null);
+      }, 1200); // brief pause so user sees the success message
+      return;
     }
-    // On success, AuthContext will detect the new session and redirect automatically
+
+    // ── Case 3: No email at all ──────────────────────────────────────────────
+    setScanMessage(
+      `✅ Face verified as ${profile.display_name}. No email linked — ` +
+      `re-enroll via Admin → Face ID Enroll with your login email.`
+    );
   };
 
   const handleUnrecognized = () => {
