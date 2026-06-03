@@ -63,28 +63,31 @@ export default function LoginPage() {
   const handleRecognized = async (profile: any) => {
     setScanState('recognized');
     setScanStatus('success');
-    setScanMessage(`✅ Welcome, ${profile.display_name}! Signing you in…`);
 
-    // If the face profile has an associated email, sign in with it
-    if (profile.email) {
-      try {
-        // Use a magic-link / OTP session: attempt signIn via the stored email
-        // For face-recognized users, we use a special marker password (set during enrollment)
-        // Or, if you want fully passwordless, you can use signInWithOtp here instead.
-        // For now: face login sets a short-lived trusted session by signing in with the
-        // profile's linked Supabase email + a system sentinel password.
-        // In production, enroll users with a known password or use service-role magic link.
-        const { error } = await signIn(profile.email, profile.face_login_password || 'FaceLogin2024!');
-        if (error) {
-          // Graceful fallback: show access granted message without forcing signIn
-          setScanMessage(`✅ Face verified — please complete sign-in manually for: ${profile.email}`);
-        }
-      } catch {
-        setScanMessage(`✅ Face verified as ${profile.display_name} — enter credentials to proceed.`);
-      }
-    } else {
-      setScanMessage(`✅ Face verified as ${profile.display_name}. No linked account — ask admin to link your email.`);
+    // Check we have both email and stored password
+    if (!profile.email || !profile.face_login_password) {
+      setScanMessage(
+        `✅ Face verified as ${profile.display_name}. ` +
+        `No linked credentials found — please re-enroll with email & password, or use password login.`
+      );
+      return;
     }
+
+    setScanMessage(`✅ ${profile.display_name} recognised — signing you in…`);
+
+    // Auto sign-in: face is the biometric unlock, stored password is the key.
+    // Identical concept to Face ID on a phone unlocking using the stored PIN internally.
+    const { error } = await signIn(profile.email, profile.face_login_password);
+    if (error) {
+      // Password may have changed since enrollment — guide user to re-enroll
+      setScanState('unrecognized');
+      setScanStatus('error');
+      setScanMessage(
+        `⚠️ Face recognised as ${profile.display_name} but sign-in failed. ` +
+        `Your password may have changed — please re-enroll via Admin → Face ID Enroll, or use password login.`
+      );
+    }
+    // On success, AuthContext will detect the new session and redirect automatically
   };
 
   const handleUnrecognized = () => {
