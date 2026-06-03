@@ -29,7 +29,8 @@ import {
   BookOpen,
   Upload,
   Archive,
-  Sparkles
+  Sparkles,
+  Scan
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -107,6 +108,7 @@ export const MENU_STRUCTURE = [
       { icon: AlertTriangle, label: 'Permissions', path: '/permissions' },
       { icon: Settings, label: 'Settings', path: '/settings' },
       { icon: Bell, label: 'Notifications', path: '/notifications' },
+      { icon: Scan, label: 'Face ID Enroll', path: '/face-enroll' },
     ]
   }
 ];

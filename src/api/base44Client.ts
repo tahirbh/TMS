@@ -786,6 +786,63 @@ export const base44 = {
         localStorage.setItem('base44_documents', JSON.stringify(updatedDocs));
         return updatedDocs.find((d: any) => d.id === id);
       }
-    }
+    },
+
+    // ── Face Recognition Entities ─────────────────────────────────────────────
+    FaceProfile: {
+      list: async () => {
+        const stored = localStorage.getItem('base44_face_profiles');
+        return stored ? JSON.parse(stored) : [];
+      },
+      create: async (data: any) => {
+        const stored = localStorage.getItem('base44_face_profiles');
+        const profiles = stored ? JSON.parse(stored) : [];
+        const newProfile = {
+          id: crypto.randomUUID?.() || Math.random().toString(36).substring(2, 15),
+          created_date: new Date().toISOString(),
+          status: 'pending',
+          ...data,
+        };
+        profiles.push(newProfile);
+        localStorage.setItem('base44_face_profiles', JSON.stringify(profiles));
+        return newProfile;
+      },
+      update: async (id: string, data: any) => {
+        const stored = localStorage.getItem('base44_face_profiles');
+        const profiles = stored ? JSON.parse(stored) : [];
+        const updated = profiles.map((p: any) => p.id === id ? { ...p, ...data } : p);
+        localStorage.setItem('base44_face_profiles', JSON.stringify(updated));
+        return updated.find((p: any) => p.id === id);
+      },
+      delete: async (id: string) => {
+        const stored = localStorage.getItem('base44_face_profiles');
+        const profiles = stored ? JSON.parse(stored) : [];
+        const filtered = profiles.filter((p: any) => p.id !== id);
+        localStorage.setItem('base44_face_profiles', JSON.stringify(filtered));
+      },
+    },
+
+    RecognitionLog: {
+      list: async () => {
+        const stored = localStorage.getItem('base44_recognition_logs');
+        const logs = stored ? JSON.parse(stored) : [];
+        return logs.sort((a: any, b: any) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      },
+      create: async (data: any) => {
+        const stored = localStorage.getItem('base44_recognition_logs');
+        const logs = stored ? JSON.parse(stored) : [];
+        const newLog = {
+          id: crypto.randomUUID?.() || Math.random().toString(36).substring(2, 15),
+          timestamp: new Date().toISOString(),
+          ...data,
+        };
+        logs.unshift(newLog);
+        // Keep last 200 logs only
+        if (logs.length > 200) logs.splice(200);
+        localStorage.setItem('base44_recognition_logs', JSON.stringify(logs));
+        return newLog;
+      },
+    },
   }
 };
+
