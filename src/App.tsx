@@ -37,6 +37,9 @@ import DMSArchived from './pages/Archived';
 import DMSSampleResults from './pages/SampleResults';
 import GovLookupPage from './pages/GovLookupPage';
 import FaceEnrollPage from './pages/FaceEnrollPage';
+import UMLDiagramsPage from './pages/UMLDiagramsPage';
+import ERDPage from './pages/ERDPage';
+import UMLUseCasePage from './pages/UMLUseCasePage';
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -170,6 +173,9 @@ function AppContent() {
           <Route path="/face-enroll" element={<AuthGuard path="/face-enroll"><FaceEnrollPage /></AuthGuard>} />
           <Route path="/settings" element={<AuthGuard path="/settings"><SettingsPage /></AuthGuard>} />
           <Route path="/notifications" element={<AuthGuard path="/notifications"><NotificationsPage /></AuthGuard>} />
+          <Route path="/uml-diagrams" element={<UMLDiagramsPage />} />
+          <Route path="/erd" element={<ERDPage />} />
+          <Route path="/uml-use-cases" element={<UMLUseCasePage />} />
           <Route path="" element={<NotFoundPage />} default />
         </Switch>
       </Layout>

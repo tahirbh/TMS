@@ -30,7 +30,8 @@ import {
   Upload,
   Archive,
   Sparkles,
-  Scan
+  Scan,
+  Network
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -99,6 +100,9 @@ export const MENU_STRUCTURE = [
       { icon: BookOpen, label: 'System Spec & ERDs', path: '/knowledge' },
       { icon: HelpCircle, label: 'FAQ / SOP', path: '#faq' },
       { icon: Info, label: 'About TMS Pro', path: '#about' },
+      { icon: Network, label: 'UML Diagrams (Data Model)', path: '/uml-diagrams' },
+      { icon: Network, label: 'UML Use Case Diagrams', path: '/uml-use-cases' },
+      { icon: Network, label: 'ERD + Actors + SOP', path: '/erd' },
     ]
   },
   {
@@ -109,6 +113,21 @@ export const MENU_STRUCTURE = [
       { icon: Settings, label: 'Settings', path: '/settings' },
       { icon: Bell, label: 'Notifications', path: '/notifications' },
       { icon: Scan, label: 'Face ID Enroll', path: '/face-enroll' },
+    ]
+  },
+  {
+    label: 'UML Diagrams',
+    items: [
+      { icon: Network, label: '🏗 Data Model UML', path: '/uml-diagrams' },
+      { icon: Network, label: '🎭 Use Case Diagrams', path: '/uml-use-cases' },
+      { icon: Network, label: '📋 ERD + Actors + SOP', path: '/erd' },
+      { icon: Network, label: 'Operations UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'Fleet & Assets UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'Workforce UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'Logistics & DMS UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'AI DMS UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'Financials UML', path: '/uml-diagrams' },
+      { icon: Network, label: 'Admin UML', path: '/uml-diagrams' },
     ]
   }
 ];

@@ -12,7 +12,8 @@ import {
   FileText,
   Settings,
   LogOut,
-  UserCircle
+  UserCircle,
+  Network
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '../lib/utils';
@@ -63,6 +64,7 @@ const MacOSLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     { icon: Users, label: 'Employee Master', path: '/employee-master' },
     { icon: FileText, label: 'DMS Engine', path: '/dms' },
     { icon: Search, label: 'Relational Search', path: '/search' },
+    { icon: Network, label: 'UML Diagrams', path: '/uml-diagrams' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 
