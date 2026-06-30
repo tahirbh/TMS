@@ -175,34 +175,8 @@ export default function Navbar() {
         <div className="container-xl" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
 
           {/* ── Logo ── */}
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', flexShrink: 0 }}>
-            <motion.div
-              whileHover={{ rotate: 360, scale: 1.1 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              style={{
-                width: 38,
-                height: 38,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 16px rgba(0,196,125,0.4)',
-              }}
-            >
-              <img src="/crystal-recycle-logo.png" alt="Recycle Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </motion.div>
-            <div style={{ lineHeight: 1.1 }}>
-              <span
-                className="gradient-text"
-                style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em', display: 'block' }}
-              >
-                WM Portal
-              </span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                Excellence
-              </span>
-            </div>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}>
+            <img src="/eh-logo.png" alt="EH Environmental Horizons Co." style={{ height: '38px', objectFit: 'contain' }} />
           </Link>
 
           {/* ── Desktop Nav ── */}

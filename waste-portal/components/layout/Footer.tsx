@@ -118,31 +118,8 @@ export default function Footer() {
 
         {/* ── Column 1: Brand ── */}
         <motion.div variants={colVariants} style={{ gridColumn: 'span 1' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', marginBottom: '1rem' }}>
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ type: 'spring', stiffness: 180, damping: 14 }}
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 0 20px rgba(0,196,125,0.35)',
-              }}
-            >
-              <img src="/crystal-recycle-logo.png" alt="Recycle Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            </motion.div>
-            <div>
-              <span className="gradient-text" style={{ fontSize: '1.15rem', fontWeight: 800, letterSpacing: '-0.02em', display: 'block' }}>
-                WM Portal
-              </span>
-              <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-                Excellence
-              </span>
-            </div>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none', marginBottom: '1.25rem' }}>
+            <img src="/eh-logo.png" alt="EH Environmental Horizons Co." style={{ height: '42px', objectFit: 'contain' }} />
           </Link>
 
           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '1rem' }}>
