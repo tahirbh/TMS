@@ -581,7 +581,8 @@ function GoalsOverview() {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.5 }}
-          className="crystal-card p-8"
+          className="crystal-card p-8 glass-card"
+          style={{ background: 'white', border: '1px solid rgba(0,0,0,0.05)' }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
@@ -592,7 +593,7 @@ function GoalsOverview() {
             ].map((s) => (
               <div key={s.label}>
                 <div className="text-3xl mb-2">{s.icon}</div>
-                <div className="stat-number text-2xl mb-1">{s.value}</div>
+                <div className="stat-number text-2xl mb-1 text-slate-800">{s.value}</div>
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{s.label}</p>
               </div>
             ))}
@@ -611,7 +612,7 @@ function CTASection() {
   return (
     <section
       className="section-padding relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #050d1a 0%, #0a1628 60%, #061a08 100%)' }}
+      style={{ background: 'var(--gradient-hero)' }}
       ref={ref}
     >
       {/* Grid */}
@@ -666,11 +667,11 @@ function CTASection() {
             ))}
           </motion.div>
 
-          <h2 className="heading-xl text-white mb-6">
+          <h2 className="heading-xl text-slate-800 mb-6">
             Together Towards{' '}
             <span className="gradient-text">2030</span>
           </h2>
-          <p className="text-body-lg text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-body-lg text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
             The 2030 Agenda for Sustainable Development cannot succeed without transforming how
             we produce, consume, and dispose of waste. Join us in building a sustainable future.
           </p>
@@ -682,19 +683,19 @@ function CTASection() {
               rel="noopener noreferrer"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="btn-crystal btn-crystal-primary text-base px-8 py-4"
+              className="btn-crystal btn-crystal-primary text-base px-8 py-4 flex items-center gap-2"
             >
               🌐 Learn More About SDGs
-              <ExternalLink className="w-4 h-4 ml-2" />
+              <ExternalLink className="w-4 h-4" />
             </motion.a>
             <motion.a
               href="/contact"
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="btn-crystal btn-crystal-outline text-base px-8 py-4"
+              className="btn-crystal btn-crystal-glass text-slate-700 border-slate-300 text-base px-8 py-4 flex items-center gap-2"
             >
               Partner With Us
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <ArrowRight className="w-4 h-4" />
             </motion.a>
           </div>
 
@@ -706,11 +707,11 @@ function CTASection() {
             className="mt-12 flex items-center justify-center gap-4"
           >
             <div
-              className="flex items-center gap-3 px-6 py-3 rounded-full"
-              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+              className="flex items-center gap-3 px-6 py-3 rounded-full glass-card"
+              style={{ background: 'white', border: '1px solid rgba(0,0,0,0.06)' }}
             >
               <span className="text-2xl">🇺🇳</span>
-              <span className="text-sm text-gray-300 font-medium">
+              <span className="text-sm text-slate-600 font-medium">
                 Aligned with the UN 2030 Agenda for Sustainable Development
               </span>
             </div>
@@ -730,7 +731,7 @@ export default function SDGsPage() {
         className="hero-section relative"
         style={{
           minHeight: '80vh',
-          background: 'linear-gradient(135deg, #060d1a 0%, #0a1628 40%, #061a10 100%)',
+          background: 'var(--gradient-hero)',
         }}
       >
         {/* Color gradient layers for SDG feel */}
@@ -738,7 +739,7 @@ export default function SDGsPage() {
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(ellipse at 20% 50%, rgba(0,157,219,0.12), transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(86,192,43,0.10), transparent 50%)',
+              'radial-gradient(ellipse at 20% 50%, rgba(0,196,125,0.08), transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(86,192,43,0.06), transparent 50%)',
           }}
         />
 
@@ -747,7 +748,7 @@ export default function SDGsPage() {
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)',
+              'linear-gradient(rgba(0,196,125,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,196,125,0.1) 1px, transparent 1px)',
             backgroundSize: '50px 50px',
           }}
         />
@@ -793,19 +794,19 @@ export default function SDGsPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-hero text-white mb-6 mx-auto max-w-5xl leading-tight"
+            className="heading-hero text-slate-800 mb-6 mx-auto max-w-5xl leading-tight"
           >
             Sustainable Development{' '}
             <span className="gradient-text text-glow-green">Goals</span>
             {' '}&{' '}
-            <span style={{ color: '#009DDB' }}>Waste Management</span>
+            <span style={{ color: 'var(--blue-primary)' }}>Waste Management</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.25 }}
-            className="text-body-lg text-gray-300 max-w-3xl mx-auto mb-12 leading-relaxed"
+            className="text-body-lg text-slate-600 max-w-3xl mx-auto mb-12 leading-relaxed"
           >
             Waste management is not just sanitation — it is a cornerstone of sustainable
             development. Discover how our facilities and programs directly advance six of the
@@ -828,7 +829,7 @@ export default function SDGsPage() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.5 + i * 0.07 }}
-                className="sdg-icon text-3xl"
+                className="sdg-icon text-3xl flex items-center justify-center"
                 style={{ background: goal.color, width: 72, height: 72, fontSize: '2rem' }}
                 title={`SDG ${goal.number}: ${goal.title}`}
               >
@@ -843,14 +844,14 @@ export default function SDGsPage() {
             transition={{ duration: 1, delay: 0.9 }}
             className="flex flex-wrap justify-center gap-3"
           >
-            <a href="#overview" className="btn-crystal btn-crystal-primary">
+            <a href="#overview" className="btn-crystal btn-crystal-primary flex items-center gap-2">
               Explore Our Impact <ChevronRight className="w-4 h-4" />
             </a>
             <a
               href="https://sdgs.un.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-crystal btn-crystal-glass text-white"
+              className="btn-crystal btn-crystal-glass text-slate-700 border-slate-300 flex items-center gap-2"
             >
               UN SDGs Website <ExternalLink className="w-4 h-4" />
             </a>
@@ -863,7 +864,7 @@ export default function SDGsPage() {
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40"
         >
-          <span className="text-white text-xs">Scroll to explore</span>
+          <span className="text-slate-600 text-xs">Scroll to explore</span>
           <div className="w-0.5 h-8 rounded-full" style={{ background: 'var(--green-primary)' }} />
         </motion.div>
       </section>

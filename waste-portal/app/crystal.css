@@ -18,35 +18,35 @@
   --accent-cyan: #00B8D9;
 
   /* Background */
-  --bg-primary: #f8fffe;
-  --bg-secondary: #f0f9f6;
-  --bg-card: rgba(255, 255, 255, 0.65);
-  --bg-glass: rgba(255, 255, 255, 0.12);
-  --bg-dark: #0a1628;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.55);
+  --bg-glass: rgba(255, 255, 255, 0.08);
+  --bg-dark: #f8fafc;
 
   /* Text */
-  --text-primary: #0d1f3c;
-  --text-secondary: #4a6380;
-  --text-muted: #7a95b0;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
   --text-light: #ffffff;
 
   /* Glass Effects */
-  --glass-border: rgba(255, 255, 255, 0.45);
-  --glass-shadow: 0 8px 32px rgba(0, 196, 125, 0.08), 0 2px 8px rgba(0, 111, 239, 0.06);
-  --glass-blur: blur(24px);
-  --crystal-border: linear-gradient(135deg, rgba(0,196,125,0.7), rgba(0,111,239,0.7), rgba(255,255,255,0.9), rgba(0,196,125,0.4));
+  --glass-border: rgba(255, 255, 255, 0.7);
+  --glass-shadow: 0 12px 40px rgba(0, 196, 125, 0.08), 0 4px 16px rgba(0, 111, 239, 0.06), inset 0 0 16px rgba(255, 255, 255, 0.6);
+  --glass-blur: blur(20px);
+  --crystal-border: linear-gradient(135deg, rgba(0, 196, 125, 0.85) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(0, 111, 239, 0.85) 100%);
 
   /* Neumorphism */
   --neu-light: #ffffff;
   --neu-shadow-light: rgba(255, 255, 255, 0.9);
-  --neu-shadow-dark: rgba(0, 150, 100, 0.12);
-  --neu-bg: #f0f9f6;
+  --neu-shadow-dark: rgba(0, 150, 100, 0.08);
+  --neu-bg: #f8fafc;
 
   /* Gradients */
   --gradient-brand: linear-gradient(135deg, var(--green-primary) 0%, var(--blue-primary) 100%);
-  --gradient-hero: linear-gradient(rgba(10, 22, 40, 0.8), rgba(10, 22, 40, 0.92)), url('/hero-bg.png') no-repeat center center / cover;
-  --gradient-card: linear-gradient(135deg, rgba(0,196,125,0.08) 0%, rgba(0,111,239,0.08) 100%);
-  --gradient-glow: radial-gradient(ellipse at center, rgba(0,196,125,0.15) 0%, transparent 70%);
+  --gradient-hero: linear-gradient(135deg, rgba(240, 250, 245, 0.85) 0%, rgba(255, 255, 255, 0.95) 60%, rgba(230, 242, 255, 0.6) 100%);
+  --gradient-card: linear-gradient(135deg, rgba(0,196,125,0.06) 0%, rgba(0,111,239,0.06) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, rgba(0,196,125,0.12) 0%, transparent 70%);
 
   /* Spacing & Sizing */
   --border-radius: 16px;
@@ -60,23 +60,23 @@
 
   /* Scrollbar */
   --scrollbar-thumb: var(--green-primary);
-  --scrollbar-track: rgba(0, 196, 125, 0.1);
+  --scrollbar-track: rgba(0, 196, 125, 0.05);
 }
 
-/* ─── Dark Mode ─── */
+/* ─── Dark Mode (Standardized Light Glassmorphism) ─── */
 [data-theme="dark"] {
-  --bg-primary: #0a1628;
-  --bg-secondary: #0d2040;
-  --bg-card: rgba(13, 32, 64, 0.72);
-  --bg-glass: rgba(0, 196, 125, 0.05);
-  --text-primary: #e8f5f0;
-  --text-secondary: #8ab4cc;
-  --text-muted: #5a8aaa;
-  --glass-border: rgba(0, 196, 125, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 196, 125, 0.12), 0 2px 8px rgba(0, 111, 239, 0.08);
-  --neu-bg: #0d2040;
-  --neu-shadow-light: rgba(0, 196, 125, 0.05);
-  --neu-shadow-dark: rgba(0, 0, 0, 0.45);
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.65);
+  --bg-glass: rgba(255, 255, 255, 0.12);
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #475569;
+  --glass-border: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 16px 48px rgba(0, 196, 125, 0.14), 0 6px 20px rgba(0, 111, 239, 0.1), inset 0 0 24px rgba(255, 255, 255, 0.85);
+  --neu-bg: #f8fafc;
+  --neu-shadow-light: rgba(255, 255, 255, 0.95);
+  --neu-shadow-dark: rgba(0, 196, 125, 0.08);
 }
 
 /* ─── Base Styles Override ─── */

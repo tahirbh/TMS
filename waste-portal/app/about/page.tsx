@@ -107,7 +107,7 @@ function VisionBar({ label, current, target, color }: { label: string; current: 
           <span className="text-[var(--text-muted)]">→ {target}% target</span>
         </div>
       </div>
-      <div className="h-3 rounded-full bg-white/10 overflow-hidden">
+      <div className="h-3 rounded-full bg-slate-200 overflow-hidden">
         <motion.div
           className="h-full rounded-full relative overflow-hidden"
           style={{ background: color }}
@@ -119,7 +119,7 @@ function VisionBar({ label, current, target, color }: { label: string; current: 
         </motion.div>
       </div>
       <div className="relative h-1">
-        <div className="absolute h-3 w-px bg-white/40" style={{ left: `${target}%`, top: '-8px' }} />
+        <div className="absolute h-3 w-px bg-slate-300" style={{ left: `${target}%`, top: '-8px' }} />
       </div>
     </div>
   );
@@ -137,7 +137,7 @@ export default function AboutPage() {
 
       {/* ─── HERO BANNER ─── */}
       <section ref={heroRef} className="relative min-h-[80vh] flex items-center justify-center overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #050d1a 0%, #0a1628 40%, #021a0e 100%)' }}>
+        style={{ background: 'var(--gradient-hero)' }}>
         {/* Orbs */}
         <div className="orb orb-green w-[600px] h-[600px] -top-40 -left-40 opacity-40" />
         <div className="orb orb-blue w-[500px] h-[500px] -bottom-40 -right-20 opacity-30" />
@@ -155,13 +155,13 @@ export default function AboutPage() {
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}
-            className="heading-hero text-white mb-6">
+            className="heading-hero text-slate-800 mb-6">
             About{' '}
             <span className="gradient-text">Waste Management</span>
           </motion.h1>
 
           <motion.p initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-body-lg text-white/70 max-w-3xl mx-auto mb-10">
+            className="text-body-lg text-slate-600 max-w-3xl mx-auto mb-10">
             The world generates <strong className="text-[var(--green-primary)]">2.24 billion tonnes</strong> of solid waste annually — 
             a number set to double by 2050. Understanding waste is the first step to solving one of humanity's most urgent environmental crises.
           </motion.p>
@@ -306,14 +306,14 @@ export default function AboutPage() {
       </section>
 
       {/* ─── CURRENT CHALLENGES ─── */}
-      <section className="section-padding" style={{ background: 'linear-gradient(135deg, #050d1a 0%, #0a1628 100%)' }}>
+      <section className="section-padding" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container-xl">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7 }}
             className="text-center mb-16">
-            <div className="label-tag mx-auto mb-4 w-fit border-white/20 text-white/80 bg-white/10"><AlertTriangle className="w-4 h-4" /> Right Now</div>
-            <h2 className="heading-xl text-white mb-4">Current <span className="gradient-text">Challenges</span></h2>
-            <p className="text-white/60 text-body-lg max-w-2xl mx-auto">Three crises defining the modern waste landscape — each demanding urgent, coordinated global response.</p>
+            <div className="label-tag mx-auto mb-4 w-fit"><AlertTriangle className="w-4 h-4" /> Right Now</div>
+            <h2 className="heading-xl text-slate-800 mb-4">Current <span className="gradient-text">Challenges</span></h2>
+            <p className="text-slate-600 text-body-lg max-w-2xl mx-auto">Three crises defining the modern waste landscape — each demanding urgent, coordinated global response.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -326,25 +326,25 @@ export default function AboutPage() {
                   viewport={{ once: true, margin: '-60px' }}
                   transition={{ duration: 0.7, delay: i * 0.15 }}
                   whileHover={{ y: -8, scale: 1.02 }}
-                  className="relative rounded-3xl p-8 overflow-hidden cursor-default"
-                  style={{ background: 'rgba(255,255,255,0.05)', border: `1px solid ${ch.color}30`, backdropFilter: 'blur(20px)' }}>
+                  className="relative rounded-3xl p-8 overflow-hidden cursor-default glass-card"
+                  style={{ background: 'white', border: `1px solid ${ch.color}30` }}>
                   {/* Glow bg */}
-                  <div className="absolute inset-0 opacity-10" style={{ background: `radial-gradient(ellipse at top left, ${ch.color}, transparent 60%)` }} />
+                  <div className="absolute inset-0 opacity-5" style={{ background: `radial-gradient(ellipse at top left, ${ch.color}, transparent 60%)` }} />
 
                   <div className="relative z-10">
                     <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-                      style={{ background: `${ch.color}20`, border: `1px solid ${ch.color}40`, boxShadow: `0 0 24px ${ch.color}30` }}>
+                      style={{ background: `${ch.color}10`, border: `1px solid ${ch.color}30`, boxShadow: `0 0 24px ${ch.color}20` }}>
                       <Icon className="w-8 h-8" style={{ color: ch.color }} />
                     </div>
 
                     <div className="mb-4">
                       <div className="text-5xl font-black mb-1" style={{ color: ch.color }}>{ch.stat}</div>
-                      <div className="text-white/50 text-sm">{ch.statLabel}</div>
+                      <div className="text-slate-400 text-sm">{ch.statLabel}</div>
                     </div>
 
-                    <h3 className="text-2xl font-bold text-white mb-2">{ch.title}</h3>
-                    <p className="text-white/40 text-xs uppercase tracking-widest font-semibold mb-4">{ch.subtitle}</p>
-                    <p className="text-white/65 text-sm leading-relaxed">{ch.desc}</p>
+                    <h3 className="text-2xl font-bold text-slate-800 mb-2">{ch.title}</h3>
+                    <p className="text-slate-400 text-xs uppercase tracking-widest font-semibold mb-4">{ch.subtitle}</p>
+                    <p className="text-slate-600 text-sm leading-relaxed">{ch.desc}</p>
                   </div>
                 </motion.div>
               );
@@ -388,14 +388,14 @@ export default function AboutPage() {
       </section>
 
       {/* ─── FUTURE VISION ─── */}
-      <section className="section-padding" style={{ background: 'linear-gradient(135deg, #050d1a 0%, #071428 50%, #021a0e 100%)' }}>
+      <section className="section-padding" style={{ background: 'var(--gradient-hero)' }}>
         <div className="container-lg">
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7 }}
             className="text-center mb-16">
-            <div className="label-tag mx-auto mb-4 w-fit border-white/20 text-white/80 bg-white/10"><Target className="w-4 h-4" /> Looking Ahead</div>
-            <h2 className="heading-xl text-white mb-4">Zero Waste by <span className="gradient-text">2050</span></h2>
-            <p className="text-white/60 text-body-lg max-w-2xl mx-auto">
+            <div className="label-tag mx-auto mb-4 w-fit"><Target className="w-4 h-4" /> Looking Ahead</div>
+            <h2 className="heading-xl text-slate-800 mb-4">Zero Waste by <span className="gradient-text">2050</span></h2>
+            <p className="text-slate-600 text-body-lg max-w-2xl mx-auto">
               A zero-waste future is achievable — but it requires dramatically scaling what works. Here's where we stand versus where we need to be.
             </p>
           </motion.div>
@@ -405,12 +405,12 @@ export default function AboutPage() {
             <motion.div initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }} transition={{ duration: 0.7 }}
               className="space-y-8"
-              style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '24px', padding: '40px', border: '1px solid rgba(255,255,255,0.08)' }}>
-              <h3 className="text-xl font-bold text-white mb-6">Progress Tracker</h3>
+              style={{ background: 'white', borderRadius: '24px', padding: '40px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 8px 32px rgba(0,0,0,0.02)' }}>
+              <h3 className="text-xl font-bold text-slate-800 mb-6">Progress Tracker</h3>
               {visionItems.map((item, i) => (
                 <VisionBar key={i} {...item} />
               ))}
-              <p className="text-white/40 text-xs mt-4">│ = 2050 target threshold</p>
+              <p className="text-slate-400 text-xs mt-4">│ = 2050 target threshold</p>
             </motion.div>
 
             {/* Vision pillars */}
@@ -431,15 +431,15 @@ export default function AboutPage() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: i * 0.1 }}
                     whileHover={{ x: 8 }}
-                    className="flex items-start gap-4 p-5 rounded-2xl"
-                    style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${pillar.color}25` }}>
+                    className="flex items-start gap-4 p-5 rounded-2xl glass-card"
+                    style={{ background: 'white', border: `1px solid ${pillar.color}20` }}>
                     <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ background: `${pillar.color}20` }}>
+                      style={{ background: `${pillar.color}10` }}>
                       <Icon className="w-5 h-5" style={{ color: pillar.color }} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-white mb-1">{pillar.title}</h4>
-                      <p className="text-white/55 text-sm leading-relaxed">{pillar.desc}</p>
+                      <h4 className="font-bold text-slate-800 mb-1">{pillar.title}</h4>
+                      <p className="text-slate-600 text-sm leading-relaxed">{pillar.desc}</p>
                     </div>
                   </motion.div>
                 );

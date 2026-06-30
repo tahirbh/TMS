@@ -723,8 +723,8 @@ function RegulatorySection() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="crystal-card p-8 md:p-12 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, rgba(0,196,125,0.06), rgba(0,111,239,0.06))' }}
+          className="crystal-card p-8 md:p-12 relative overflow-hidden glass-card"
+          style={{ background: 'white', border: '1px solid rgba(0,0,0,0.05)' }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
@@ -735,7 +735,7 @@ function RegulatorySection() {
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-4xl mb-2">{stat.icon}</div>
-                <div className="stat-number text-2xl mb-1">{stat.value}</div>
+                <div className="stat-number text-2xl mb-1 text-slate-800">{stat.value}</div>
                 <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                   {stat.label}
                 </p>
@@ -762,12 +762,12 @@ export default function IndustrialWastePage() {
         className="hero-section"
         style={{
           minHeight: '70vh',
-          background: 'linear-gradient(135deg, #080c14 0%, #0a1628 50%, #0a120a 100%)',
+          background: 'var(--gradient-hero)',
         }}
       >
         {/* Orbs */}
-        <div className="orb orb-green" style={{ width: 600, height: 600, top: '-20%', right: '-10%', opacity: 0.2 }} />
-        <div className="orb orb-blue" style={{ width: 400, height: 400, bottom: '-15%', left: '-5%', opacity: 0.15 }} />
+        <div className="orb orb-green" style={{ width: 600, height: 600, top: '-20%', right: '-10%', opacity: 0.25 }} />
+        <div className="orb orb-blue" style={{ width: 400, height: 400, bottom: '-15%', left: '-5%', opacity: 0.2 }} />
 
         {/* Grid lines */}
         <div
@@ -776,15 +776,6 @@ export default function IndustrialWastePage() {
             backgroundImage:
               'linear-gradient(rgba(0,196,125,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(0,196,125,0.8) 1px, transparent 1px)',
             backgroundSize: '80px 80px',
-          }}
-        />
-
-        {/* Diagonal stripes - industrial aesthetic */}
-        <div
-          className="absolute inset-0 opacity-[0.02]"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,200,50,0.5) 10px, rgba(255,200,50,0.5) 11px)',
           }}
         />
 
@@ -807,7 +798,7 @@ export default function IndustrialWastePage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-hero text-white mb-6 max-w-4xl"
+            className="heading-hero text-slate-800 mb-6 max-w-4xl"
           >
             Industrial Waste{' '}
             <span className="gradient-text text-glow-green">Management</span>
@@ -817,7 +808,7 @@ export default function IndustrialWastePage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.25 }}
-            className="text-body-lg text-gray-300 max-w-2xl mb-10 leading-relaxed"
+            className="text-body-lg text-slate-600 max-w-2xl mb-10 leading-relaxed"
           >
             Comprehensive solutions for the full spectrum of industrial waste — from petrochemical
             sludge and mining tailings to manufacturing by-products. Compliant, efficient, and
@@ -830,10 +821,10 @@ export default function IndustrialWastePage() {
             transition={{ duration: 0.7, delay: 0.4 }}
             className="flex flex-wrap gap-4"
           >
-            <a href="#sectors" className="btn-crystal btn-crystal-primary">
+            <a href="#sectors" className="btn-crystal btn-crystal-primary flex items-center gap-2">
               Explore Sectors <ChevronRight className="w-4 h-4" />
             </a>
-            <a href="#treatment" className="btn-crystal btn-crystal-outline">
+            <a href="#treatment" className="btn-crystal btn-crystal-glass text-slate-700 border-slate-300">
               Treatment Methods
             </a>
           </motion.div>
@@ -853,8 +844,8 @@ export default function IndustrialWastePage() {
             ].map((chip) => (
               <div
                 key={chip.label}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-white"
-                style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold text-slate-700 glass-card"
+                style={{ background: 'white', border: '1px solid rgba(0,0,0,0.06)' }}
               >
                 <span>{chip.icon}</span>
                 {chip.label}
@@ -905,7 +896,7 @@ export default function IndustrialWastePage() {
       {/* ── CTA BANNER ── */}
       <section
         className="section-padding relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #050d1a 0%, #0a1628 50%, #0a1f12 100%)' }}
+        style={{ background: 'var(--gradient-hero)' }}
       >
         <div className="orb orb-green absolute -bottom-20 left-1/2 -translate-x-1/2 w-[600px] h-60 opacity-20" />
 
@@ -917,11 +908,11 @@ export default function IndustrialWastePage() {
             transition={{ duration: 0.7 }}
           >
             <div className="text-6xl mb-6">🏭</div>
-            <h2 className="heading-xl text-white mb-6">
+            <h2 className="heading-xl text-slate-800 mb-6">
               Need an{' '}
               <span className="gradient-text">Industrial Waste Solution?</span>
             </h2>
-            <p className="text-body-lg text-gray-300 mb-10 max-w-xl mx-auto">
+            <p className="text-body-lg text-slate-600 mb-10 max-w-xl mx-auto">
               Our engineering teams design customized waste management strategies tailored
               to your industry, volume, and regulatory requirements.
             </p>
@@ -930,7 +921,7 @@ export default function IndustrialWastePage() {
                 href="/contact"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-crystal btn-crystal-primary text-lg px-10 py-4"
+                className="btn-crystal btn-crystal-primary text-lg px-10 py-4 flex items-center gap-2"
               >
                 Get a Free Assessment <ArrowRight className="w-5 h-5" />
               </motion.a>
@@ -938,7 +929,7 @@ export default function IndustrialWastePage() {
                 href="/facilities"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                className="btn-crystal btn-crystal-outline text-lg px-10 py-4"
+                className="btn-crystal btn-crystal-glass text-slate-700 border-slate-300 text-lg px-10 py-4"
               >
                 View Our Facilities
               </motion.a>

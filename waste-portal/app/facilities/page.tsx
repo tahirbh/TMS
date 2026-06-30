@@ -736,7 +736,7 @@ export default function FacilitiesPage() {
         ref={heroRef}
         style={{
           minHeight: '70vh',
-          background: 'linear-gradient(rgba(10, 22, 40, 0.78), rgba(10, 22, 40, 0.88)), url(\'/facility-hero.png\') no-repeat center center / cover',
+          background: 'linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.95)), url(\'/facility-hero.png\') no-repeat center center / cover',
         }}
       >
         {/* Animated orbs */}
@@ -786,7 +786,7 @@ export default function FacilitiesPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="heading-hero text-white mb-6"
+            className="heading-hero text-slate-800 mb-6"
           >
             World-Class{' '}
             <span className="gradient-text text-glow-green">Facilities</span>
@@ -796,7 +796,7 @@ export default function FacilitiesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.25 }}
-            className="text-body-lg text-gray-300 max-w-2xl mb-10 leading-relaxed"
+            className="text-body-lg text-slate-600 max-w-2xl mb-10 leading-relaxed"
           >
             Eight integrated facilities working in harmony — from material recovery to
             waste-to-energy — representing the pinnacle of modern waste management engineering.
