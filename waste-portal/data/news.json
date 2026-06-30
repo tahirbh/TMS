@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "AI-Powered Sorting Robots Achieve 99.2% Accuracy in Pilot Program",
+    "category": "technology",
+    "date": "2026-06-15",
+    "excerpt": "A landmark pilot at the Central MRF demonstrates how deep-learning vision systems are revolutionizing material recovery with near-perfect accuracy.",
+    "content": "The Central Materials Recovery Facility concluded a six-month pilot of AI-powered robotic sorting arms, achieving an unprecedented 99.2% material identification accuracy. The system, developed in partnership with RoboSort Technologies, processes 45 picks per minute — three times the speed of a human sorter. The robots use hyperspectral cameras and a neural network trained on 2 million waste-item images. Contamination rates dropped from 12% to 0.8%, dramatically improving the market value of recovered materials. Full deployment across all five regional MRFs is planned for Q1 2027.",
+    "readTime": 4,
+    "imageColor": "#00C47D"
+  },
+  {
+    "id": 2,
+    "title": "New Extended Producer Responsibility Law Takes Effect January 2027",
+    "category": "policy",
+    "date": "2026-06-10",
+    "excerpt": "Landmark EPR legislation will require manufacturers to fund end-of-life collection and recycling for packaging, electronics, and batteries.",
+    "content": "The Ministry of Environment has enacted a comprehensive Extended Producer Responsibility (EPR) framework set to take effect January 2027. Under the new law, producers and importers of packaged goods, electronics, and batteries must register with the national EPR registry, report annual sales volumes, and either establish their own take-back systems or pay into a national Producer Responsibility Organization (PRO) fund. Non-compliance carries fines of up to SAR 500,000 per violation. Industry groups have welcomed the clarity while calling for a phased implementation timeline.",
+    "readTime": 5,
+    "imageColor": "#006FEF"
+  },
+  {
+    "id": 3,
+    "title": "Waste-to-Hydrogen Plant Breaks Ground in Industrial District",
+    "category": "innovation",
+    "date": "2026-06-01",
+    "excerpt": "The region's first waste-to-hydrogen facility will convert 300 tons of non-recyclable waste daily into clean hydrogen fuel.",
+    "content": "Construction has begun on a pioneering waste-to-hydrogen facility that will use plasma gasification to convert 300 metric tons of residual municipal solid waste into clean hydrogen daily. The SAR 1.2 billion project is a joint venture between GreenH2 Corp and the Municipal Waste Authority. The plant will supply hydrogen to a fleet of 500 fuel-cell municipal buses upon commissioning in late 2028. Emissions will be captured and used to produce synthetic fuels, targeting a net-zero operational footprint. The project is expected to generate 1,200 permanent jobs.",
+    "readTime": 6,
+    "imageColor": "#8B5CF6"
+  },
+  {
+    "id": 4,
+    "title": "Annual Recycling Champions Awards Ceremony Draws 2,000 Attendees",
+    "category": "events",
+    "date": "2026-05-25",
+    "excerpt": "The 5th Annual Recycling Champions Awards celebrated outstanding contributions from individuals, schools, and corporations in waste reduction.",
+    "content": "The 5th Annual Recycling Champions Awards gala at the National Convention Centre recognized excellence across 12 categories, from best school recycling program to most innovative corporate zero-waste initiative. This year's Grand Champion was Riyadh International School, which achieved a remarkable 94% waste diversion rate across its campus. Over 2,000 waste management professionals, policymakers, and community leaders attended. The Minister of Environment delivered the keynote, announcing a new SAR 50 million innovation fund for waste technology startups.",
+    "readTime": 3,
+    "imageColor": "#F59E0B"
+  },
+  {
+    "id": 5,
+    "title": "Smart Bins Rollout Expands to 50 New Neighbourhoods",
+    "category": "technology",
+    "date": "2026-05-18",
+    "excerpt": "IoT-enabled smart bins with fill-level sensors and AI contamination detection are being deployed across the city's residential zones.",
+    "content": "The Smart Bin Network expansion program entered its second phase, deploying 8,000 IoT-connected bins across 50 additional residential neighbourhoods. Each bin is equipped with ultrasonic fill-level sensors, an AI camera that identifies and rejects contaminating items, and a solar panel for autonomous operation. Dynamic collection routing has already reduced fuel consumption by 28% in Phase 1 zones. Residents can check bin fill-levels and contamination scores via the WasteTrack mobile app. Phase 3, covering industrial zones, is scheduled for Q4 2026.",
+    "readTime": 4,
+    "imageColor": "#06B6D4"
+  },
+  {
+    "id": 6,
+    "title": "National Zero-Waste Strategy 2030 Released for Public Consultation",
+    "category": "policy",
+    "date": "2026-05-10",
+    "excerpt": "The draft strategy targets 70% waste diversion from landfills by 2030 and introduces a national landfill ban on recyclable materials.",
+    "content": "The National Waste Management Authority has released the draft Zero-Waste Strategy 2030 for a 60-day public consultation period. Key targets include: diverting 70% of municipal solid waste from landfills by 2030 (up from 34% today); banning recyclable materials from landfills by 2028; reducing per-capita waste generation by 25% through producer responsibility and consumer education campaigns; and achieving 100% formal sector e-waste collection. Stakeholders can submit comments through the official consultation portal until August 2026.",
+    "readTime": 5,
+    "imageColor": "#10B981"
+  },
+  {
+    "id": 7,
+    "title": "Bioplastic Composting Standards Issued After Two-Year Study",
+    "category": "innovation",
+    "date": "2026-04-28",
+    "excerpt": "New national standards clarify which bioplastics are genuinely compostable and set labelling requirements to prevent greenwashing.",
+    "content": "After two years of research involving 47 bioplastic products, the Standards Authority has issued NAS 7821: Compostable Bioplastics — Specifications and Labelling. The standard adopts rigorous disintegration and ecotoxicity tests based on ISO 17088 but adds a mandatory field-composting test to eliminate products that only break down in industrial conditions. Manufacturers have 18 months to comply. A certified 'Truly Compostable' logo will appear on qualifying products. The standard is expected to dramatically reduce bioplastic contamination of compost feedstocks.",
+    "readTime": 5,
+    "imageColor": "#22C55E"
+  },
+  {
+    "id": 8,
+    "title": "Largest Coastal Clean-Up Drive Removes 120 Tonnes of Marine Debris",
+    "category": "events",
+    "date": "2026-04-15",
+    "excerpt": "Over 15,000 volunteers united for the National Coastal Clean-Up Day, collecting 120 tonnes of debris from 200 km of coastline.",
+    "content": "The 3rd National Coastal Clean-Up Day mobilised 15,000 volunteers across 38 beach sites, removing 120 metric tonnes of marine debris along 200 km of coastline. The most common items collected were single-use plastic bottles (32%), fishing nets (18%), and food wrappers (14%). Data collected by volunteers using the CleanUp app is contributing to a real-time marine litter database that will guide policy on single-use plastics. Local fishing communities partnered for the first time this year, bringing boats to retrieve debris from shallow reefs.",
+    "readTime": 4,
+    "imageColor": "#3B82F6"
+  },
+  {
+    "id": 9,
+    "title": "Organic Waste Biogas Plant Supplies Power to 10,000 Homes",
+    "category": "innovation",
+    "date": "2026-04-02",
+    "excerpt": "The Al-Nakheel Anaerobic Digestion facility has reached full operational capacity, turning food waste into clean electricity for residential areas.",
+    "content": "The Al-Nakheel Anaerobic Digestion Plant has achieved full operational capacity, processing 200 tonnes of organic waste daily — primarily food waste from supermarkets, restaurants, and the municipal green bin collection. The biogas produced powers a 4.5 MW generator that feeds directly into the national grid, providing electricity to approximately 10,000 homes. Digestate from the process is sold as certified organic fertiliser to local farms. The plant's success has prompted the authority to commission two additional facilities in the Northern and Eastern districts.",
+    "readTime": 4,
+    "imageColor": "#EC4899"
+  }
+]

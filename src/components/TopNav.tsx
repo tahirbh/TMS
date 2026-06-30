@@ -31,7 +31,8 @@ import {
   Archive,
   Sparkles,
   Scan,
-  Network
+  Network,
+  Globe,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -103,6 +104,7 @@ export const MENU_STRUCTURE = [
       { icon: Network, label: 'UML Diagrams (Data Model)', path: '/uml-diagrams' },
       { icon: Network, label: 'UML Use Case Diagrams', path: '/uml-use-cases' },
       { icon: Network, label: 'ERD + Actors + SOP', path: '/erd' },
+      { icon: Globe, label: 'Waste Excellence Portal', path: '/waste-portal' },
     ]
   },
   {

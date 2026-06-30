@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "Life Cycle Assessment of Municipal Solid Waste Management Systems",
+    "category": "research",
+    "author": "Dr. Aisha Al-Rashidi",
+    "date": "2026-05-20",
+    "readTime": 12,
+    "excerpt": "A comprehensive cradle-to-grave LCA comparing landfilling, incineration, composting, and integrated recycling across five regional scenarios.",
+    "content": "This peer-reviewed study compares the environmental impact of four waste management scenarios using ISO 14040/44 life cycle assessment methodology. Key findings: integrated recycling with composting consistently outperforms other scenarios across all impact categories including climate change, eutrophication, and resource depletion. Landfilling scores worst on methane emissions even with gas capture. The study recommends a minimum 60% dry-material recycling rate combined with anaerobic digestion of organics as the optimal strategy for the regional context.",
+    "tags": ["LCA", "sustainability", "research", "policy"],
+    "imageColor": "#00C47D"
+  },
+  {
+    "id": 2,
+    "title": "Best Practices in Source Separation: Lessons from 12 Global Cities",
+    "category": "best-practices",
+    "author": "Mohammed Al-Ghamdi",
+    "date": "2026-05-10",
+    "readTime": 9,
+    "excerpt": "A cross-city analysis identifying the policy, infrastructure, and behavioural factors that drive successful household waste segregation programs.",
+    "content": "This report examines source separation programs in Seoul, Vienna, San Francisco, Singapore, Tokyo, Cape Town, and six other cities to extract transferable lessons. High-performing cities share: clear, simple colour-coded bin systems; financial incentives for compliance (Pay-as-You-Throw); accessible and frequent collection; robust contamination feedback to residents; and sustained public education campaigns. The report provides a maturity model and self-assessment tool for municipalities seeking to improve their programs.",
+    "tags": ["source separation", "best practices", "global", "households"],
+    "imageColor": "#006FEF"
+  },
+  {
+    "id": 3,
+    "title": "Circular Economy Legislation: Comparative Analysis of GCC Frameworks",
+    "category": "policy",
+    "author": "Fatima Al-Zahra",
+    "date": "2026-04-30",
+    "readTime": 10,
+    "excerpt": "How Saudi Arabia, UAE, Qatar, and Kuwait are legislating the circular economy transition — gaps, opportunities, and recommendations.",
+    "content": "This policy brief maps existing and proposed circular economy legislation across GCC member states, comparing EPR schemes, plastic bans, landfill taxes, recycling mandates, and green public procurement rules. Saudi Arabia leads in EPR scope and enforcement capacity; the UAE has the most ambitious plastic phase-out timelines; Qatar has the strongest mandatory recycling targets for construction waste. Key gaps across the region include: lack of harmonised definitions, weak monitoring and verification systems, and insufficient support for informal waste sector formalisation.",
+    "tags": ["policy", "GCC", "circular economy", "legislation"],
+    "imageColor": "#8B5CF6"
+  },
+  {
+    "id": 4,
+    "title": "Deep Learning for Real-Time Waste Classification: A Technical Review",
+    "category": "technology",
+    "author": "Eng. Khalid Mansour",
+    "date": "2026-04-15",
+    "readTime": 11,
+    "excerpt": "Systematic review of convolutional neural network architectures and transfer learning approaches applied to automated waste sorting.",
+    "content": "This technical review surveys 85 peer-reviewed papers on machine-learning-based waste classification published between 2018 and 2026. YOLOv8 and EfficientDet architectures achieve state-of-the-art results (mAP > 92%) on benchmark datasets. Key challenges include poor performance on wet or deformed materials, dataset bias toward Western waste streams, and edge-deployment constraints. The review identifies hyperspectral imaging combined with RGB data fusion as the most promising avenue for near-term industrial deployment, and recommends open-source multilingual waste datasets as a research priority.",
+    "tags": ["AI", "deep learning", "sorting", "technology"],
+    "imageColor": "#F59E0B"
+  },
+  {
+    "id": 5,
+    "title": "Composting at Scale: Operational Guide for Municipalities",
+    "category": "best-practices",
+    "author": "Dr. Nora Al-Sayed",
+    "date": "2026-03-28",
+    "readTime": 8,
+    "excerpt": "Practical guidance on windrow composting, in-vessel systems, and aerated static pile methods for municipalities processing 50–500 tonnes per day.",
+    "content": "This operational guide covers site selection criteria, feedstock characterisation, windrow management, turning frequency, temperature and moisture monitoring, maturity testing, and compost quality standards. It includes troubleshooting guides for common problems: odour complaints, slow decomposition, pathogen failures, and heavy metal exceedances. Case studies from three regional facilities illustrate how to achieve Grade A compost certification. The guide also covers leachate management, biofilter design, and community engagement for facilities near residential areas.",
+    "tags": ["composting", "organics", "operations", "municipalities"],
+    "imageColor": "#06B6D4"
+  },
+  {
+    "id": 6,
+    "title": "Microplastics in Compost: Risk Assessment and Mitigation Strategies",
+    "category": "research",
+    "author": "Dr. Sara Al-Harbi",
+    "date": "2026-03-15",
+    "readTime": 13,
+    "excerpt": "Field study quantifying microplastic concentrations in compost from seven facilities and evaluating screening technologies.",
+    "content": "This field study analysed compost samples from seven municipal composting facilities for microplastic content using Fourier Transform Infrared Spectroscopy (FTIR). Average concentrations ranged from 28 to 612 particles per kilogram of dry matter, well above European regulatory thresholds proposed for 2026. Primary sources were labelled compostable bags that did not fully disintegrate and bio-waste collection bags. Fine (2mm) trommel screening reduced microplastic loads by 67%. The study recommends mandatory pre-screening of input feedstocks and strict compostable packaging certification as priority interventions.",
+    "tags": ["microplastics", "compost", "research", "environment"],
+    "imageColor": "#10B981"
+  },
+  {
+    "id": 7,
+    "title": "Pay-As-You-Throw Schemes: Economic Modelling for Arid Region Cities",
+    "category": "policy",
+    "author": "Prof. Ahmed Al-Otaibi",
+    "date": "2026-02-28",
+    "readTime": 9,
+    "excerpt": "Economic modelling of volume-based waste tariffs adapted to arid-region demographic and waste-composition profiles.",
+    "content": "This study models five PAYT tariff structures for cities with hot-arid climates, high organic waste fractions, and mixed formal/informal collection. Hybrid weight-plus-volume tariffs outperform pure volume schemes in revenue recovery (93% vs 71% of collection costs) while maintaining similar diversion incentive effects. The model incorporates income-stratified household data to assess equity impacts, finding that targeted subsidy programs for households below the poverty line can offset regressive effects. The paper provides a policy design toolkit and Excel-based simulation model available for free download.",
+    "tags": ["PAYT", "economics", "policy", "tariffs"],
+    "imageColor": "#EC4899"
+  },
+  {
+    "id": 8,
+    "title": "Urban Mining: Recovering Critical Minerals from E-Waste Streams",
+    "category": "technology",
+    "author": "Eng. Reem Al-Dosari",
+    "date": "2026-02-10",
+    "readTime": 10,
+    "excerpt": "Process engineering review of pyrometallurgical and hydrometallurgical methods for extracting gold, cobalt, and rare earth elements from e-waste.",
+    "content": "Urban mining — recovering valuable metals from e-waste — is projected to be a USD 14 billion industry by 2030. This review compares smelting, acid leaching, bioleaching, and ionic liquid extraction for recovery of gold (circuit boards), cobalt (batteries), and neodymium (motors). Ionic liquid extraction achieves 98% gold recovery at lower energy cost than smelting but requires significant capital investment. The paper presents a techno-economic model showing positive NPV for facilities processing >500 tonnes/year, and identifies the informal collection network as the primary bottleneck in feedstock supply chains.",
+    "tags": ["urban mining", "e-waste", "critical minerals", "technology"],
+    "imageColor": "#6366F1"
+  }
+]

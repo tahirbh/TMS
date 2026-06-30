@@ -40,6 +40,7 @@ import FaceEnrollPage from './pages/FaceEnrollPage';
 import UMLDiagramsPage from './pages/UMLDiagramsPage';
 import ERDPage from './pages/ERDPage';
 import UMLUseCasePage from './pages/UMLUseCasePage';
+import WastePortalPage from './pages/WastePortalPage';
 import { useEffect } from 'react';
 import { supabase } from './lib/supabase';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -176,6 +177,7 @@ function AppContent() {
           <Route path="/uml-diagrams" element={<UMLDiagramsPage />} />
           <Route path="/erd" element={<ERDPage />} />
           <Route path="/uml-use-cases" element={<UMLUseCasePage />} />
+          <Route path="/waste-portal" element={<WastePortalPage />} />
           <Route path="" element={<NotFoundPage />} default />
         </Switch>
       </Layout>

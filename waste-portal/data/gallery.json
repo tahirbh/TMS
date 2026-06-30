@@ -1,0 +1,14 @@
+[
+  { "id": 1, "title": "Material Recovery Facility", "category": "industrial", "description": "State-of-the-art MRF processing 500 tons daily", "bgColor": "#00C47D" },
+  { "id": 2, "title": "Composting Operations", "category": "industrial", "description": "Large-scale composting windrows", "bgColor": "#22C55E" },
+  { "id": 3, "title": "Waste Segregation Training", "category": "events", "description": "Community awareness workshop", "bgColor": "#006FEF" },
+  { "id": 4, "title": "Recycling Conveyor System", "category": "equipment", "description": "Advanced optical sorting technology", "bgColor": "#8B5CF6" },
+  { "id": 5, "title": "E-Waste Collection Drive", "category": "events", "description": "Annual electronics recycling event", "bgColor": "#06B6D4" },
+  { "id": 6, "title": "Solar-Powered Compactor", "category": "equipment", "description": "Smart solar waste compaction unit", "bgColor": "#F59E0B" },
+  { "id": 7, "title": "Leachate Treatment Plant", "category": "industrial", "description": "Advanced wastewater treatment", "bgColor": "#3B82F6" },
+  { "id": 8, "title": "School Recycling Program", "category": "awareness", "description": "Students learning waste segregation", "bgColor": "#EC4899" },
+  { "id": 9, "title": "Before: Illegal Dump Site", "category": "before-after", "description": "Before remediation in 2022", "bgColor": "#EF4444" },
+  { "id": 10, "title": "After: Green Park", "category": "before-after", "description": "Same site converted to community park 2024", "bgColor": "#00C47D" },
+  { "id": 11, "title": "Drone Survey: Landfill", "category": "industrial", "description": "Aerial view of engineered sanitary landfill", "bgColor": "#6366F1" },
+  { "id": 12, "title": "Community Clean-Up Day", "category": "events", "description": "500 volunteers cleaned coastal area", "bgColor": "#14B8A6" }
+]
